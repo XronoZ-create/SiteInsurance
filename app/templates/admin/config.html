@@ -1,0 +1,53 @@
+{% extends "base_page.html" %}
+
+{% block head %}
+    <title>Настройки</title>
+{% endblock %}
+
+{% block body %}
+    <div class="page-content">
+        <div class="container-fluid">
+            <form action="" method="post">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title text-primary">Телефонный сервис</h4>
+
+                                    <div class="mb-3 row" id="v-telephone-service">
+                                        <label for="telephone_service" class="col-md-2 col-form-label fw-bold">Сервис</label>
+                                        <div class="col-md-10">
+                                            <select class="form-select" name="telephone_service" id="telephone_service" v-model="telephone_service">
+                                                <option>onlinesim</option>
+                                                <option>vak</option>
+                                                <option>activate</option>
+                                                <option>any</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="row me-auto">
+                                        <button type="submit" class="btn btn-primary btn-lg waves-effect waves-light">Сохранить</button>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        Vue.createApp({
+          data() {
+              return {
+                  telephone_service: '{{ telephone_service }}'
+              }
+
+          }
+        }).mount('#v-telephone-service')
+
+    </script>
+{% endblock %}

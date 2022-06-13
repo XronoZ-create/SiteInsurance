@@ -1,0 +1,1256 @@
+{% extends "base_page.html" %}
+
+{% block head %}
+    <title>Альфастрахование редактирование заявки #{{osago_ugsk.id}}</title>
+    <style>
+        .ui-autocomplete {
+            position: absolute;
+            z-index: 1000;
+            cursor: default;
+            padding: 0;
+            margin-top: 2px;
+            list-style: none;
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            -webkit-border-radius: 5px;
+               -moz-border-radius: 5px;
+                    border-radius: 5px;
+            -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+               -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+                    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+        .ui-autocomplete > li {
+          padding: 3px 20px;
+        }
+        .ui-autocomplete > li.ui-state-focus {
+          background-color: #DDD;
+        }
+        .ui-helper-hidden-accessible {
+          display: none;
+        }
+    </style>
+{% endblock %}
+
+
+
+{% block body %}
+    <div class="page-content">
+        <div class="container-fluid">
+            <form action="" method="post">
+                <input type="hidden" name="id" value="{{osago_ugsk.id}}">
+
+                <div class="row" id="oformitel_row">
+                    <div class="col-12" v-if=" '{{ current_user.role_id }}' == '1' || '{{ current_user.role_id }}' == '3' ">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title text-primary">Оформитель</h4>
+                                    <div class="mb-3 row">
+                                        <label class="col-md-2 col-form-label fw-bold" for="email_login">Логин</label>
+                                        <div class="col-md-10">
+                                            <input class="form-select" name="oformitel" id="oformitel" list="datalistOptionsOformitel" value="{{ osago_ugsk.oformitel_name }}" autocomplete="off">
+                                            <datalist id="datalistOptionsOformitel">
+                                                {% for oformitel in all_users%}
+                                                    <option>{{oformitel.username}}</option>
+                                                {% endfor %}
+                                            </datalist>
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title text-primary">Почта</h4>
+                                    <div class="mb-3 row">
+                                        <label class="col-md-2 col-form-label fw-bold" for="email_login">Логин</label>
+                                        <div class="col-md-10">
+                                            <input id="email_login" class="form-control" type="text" name="email_login" value="{{osago_ugsk.email_login}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="email_password" class="col-md-2 col-form-label fw-bold">Пароль</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="email_password" name="email_password" value="{{osago_ugsk.email_password}}">
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" id="strah_row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title text-primary">Страхователь</h4>
+
+                                <div class="mb-3 row">
+                                    <label for="surname" class="col-md-2 col-form-label fw-bold">Фамилия</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="surname" name="surname" value="{{osago_ugsk.surname}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="name" class="col-md-2 col-form-label fw-bold">Имя</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="name" name="name" value="{{osago_ugsk.name}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="otchestvo" class="col-md-2 col-form-label fw-bold">Отчество</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="otchestvo" name="otchestvo" value="{{osago_ugsk.otchestvo}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="birthday" class="col-md-2 col-form-label fw-bold">Дата рождения</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="date" id="birthday" name="birthday" value="{{osago_ugsk.birthday}}">
+                                    </div>
+                                </div>
+
+                                <h4 class="card-title text-primary">Паспорт</h4>
+                                <div class="mb-3 row">
+                                    <label for="pass_seriya" class="col-md-2 col-form-label fw-bold">Серия</label>
+                                    <div class="col-md-10">
+                                        <input id="pass_seriya" class="form-control input-mask" data-inputmask="'mask': '9', 'repeat': 4, 'greedy' : false" name="pass_seriya" value="{{osago_ugsk.pass_seriya}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="pass_number" class="col-md-2 col-form-label fw-bold">Номер</label>
+                                    <div class="col-md-10">
+                                        <input id="pass_number" class="form-control input-mask" data-inputmask="'mask': '9', 'repeat': 6, 'greedy' : false" name="pass_number" value="{{osago_ugsk.pass_number}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="pass_vidach" class="col-md-2 col-form-label fw-bold">Дата выдачи</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="date" id="pass_vidach" name="pass_vidach" value="{{osago_ugsk.pass_vidach}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="pass_address" class="col-md-2 col-form-label fw-bold">Адрес прописки</label>
+                                    <div class="col-md-10">
+                                        <input class="form-select autocomplete" name="pass_address" id="pass_address" list="datalistOptionsAddressStrah" v-model="selected_address_strah" @input="select_address_strah" autocomplete="off" required>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" id="v-sobstv">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title text-primary">Собственник</h4>
+
+                                <div class="mb-3 row">
+                                    <label class="col-md-2 col-form-label fw-bold">Собственник является страхователем</label>
+                                    <div class="col-md-10">
+                                        <div class="square-switch">
+                                            <input type="checkbox" id="sobstv_yavl_strah" switch="none" checked="" name="sobstv_yavl_strah" v-model="checked" @change="set_sobstv_strah">
+                                            <label for="sobstv_yavl_strah" data-on-label="Да" data-off-label="Нет"></label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div v-show="!checked">
+                                    <div class="mb-3 row">
+                                        <label for="sobstv_surname" class="col-md-2 col-form-label fw-bold">Фамилия</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="sobstv_surname" name="sobstv_surname" value="{{osago_ugsk.sobstv_surname}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="sobstv_name" class="col-md-2 col-form-label fw-bold">Имя</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="sobstv_name" name="sobstv_name" value="{{osago_ugsk.sobstv_name}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="sobstv_otchestvo" class="col-md-2 col-form-label fw-bold">Отчество</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="sobstv_otchestvo" name="sobstv_otchestvo" value="{{osago_ugsk.sobstv_otchestvo}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="sobstv_birthday" class="col-md-2 col-form-label fw-bold">Дата рождения</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="sobstv_birthday" name="sobstv_birthday" value="{{osago_ugsk.sobstv_birthday}}">
+                                        </div>
+                                    </div>
+
+                                    <h4 class="card-title text-primary">Паспорт</h4>
+                                    <div class="mb-3 row">
+                                        <label for="sobstv_pass_seriya" class="col-md-2 col-form-label fw-bold">Серия</label>
+                                        <div class="col-md-10">
+                                            <input id="sobstv_pass_seriya" class="form-control input-mask" data-inputmask="'mask': '9', 'repeat': 4, 'greedy' : false" name="sobstv_pass_seriya" value="{{osago_ugsk.sobstv_pass_seriya}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="sobstv_pass_number" class="col-md-2 col-form-label fw-bold">Номер</label>
+                                        <div class="col-md-10">
+                                            <input id="sobstv_pass_number" class="form-control input-mask" data-inputmask="'mask': '9', 'repeat': 6, 'greedy' : false" name="sobstv_pass_number" value="{{osago_ugsk.sobstv_pass_number}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="sobstv_pass_vidach" class="col-md-2 col-form-label fw-bold">Дата выдачи</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="sobstv_pass_vidach" name="sobstv_pass_vidach" value="{{osago_ugsk.sobstv_pass_vidach}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="sobstv_pass_address" class="col-md-2 col-form-label fw-bold">Адрес прописки</label>
+                                        <div class="col-md-10">
+                                            <input class="form-select autocomplete" name="sobstv_pass_address" id="sobstv_pass_address" list="datalistOptionsAddressSobstv" v-model="selected_address_sobstv" @input="select_address_sobstv" autocomplete="off" :required="checked ? false : true">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="auto">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title text-primary">Данные авто</h4>
+
+                                    <input id="auto_type" class="form-control input-mask" name="auto_type" v-model="auto_type" hidden>
+
+                                    <input id="modification_name" class="form-control input-mask" name="modification_name" v-model="modification_name" hidden>
+                                    <input id="modification" class="form-control input-mask" name="modification" v-model="modification" hidden>
+
+                                    <input id="brand" class="form-control input-mask" name="brand" v-model="brand" hidden>
+                                    <input id="brand_name" class="form-control input-mask" name="brand_name" v-model="brand_name" hidden>
+
+                                    <input id="model" class="form-control input-mask" name="model" v-model="model" hidden>
+                                    <input id="model_name" class="form-control input-mask" name="model_name" v-model="model_name" hidden>
+
+                                    <div hidden><input id="category" name="category" v-model="category" required></div>
+                                    <div class="mb-3 row">
+                                        <label for="target" class="col-md-2 col-form-label fw-bold">Цель</label>
+                                        <div class="col-md-10">
+                                            <select class="form-select" name="target" id="target">
+                                                <option v-if="'{{osago_ugsk.target}}' == 'Личные'" selected>Личные</option>
+                                                <option v-else>Личные</option>
+                                                <option v-if="'{{osago_ugsk.target}}' == 'Дорожные и специальные ТС'" selected>Дорожные и специальные ТС</option>
+                                                <option v-else>Дорожные и специальные ТС</option>
+                                                <option v-if="'{{osago_ugsk.target}}' == 'Инкассация'" selected>Инкассация</option>
+                                                <option v-else>Инкассация</option>
+                                                <option v-if="'{{osago_ugsk.target}}' == 'Перевозка опасных и легко воспламеняющихся грузов'" selected>Перевозка опасных и легко воспламеняющихся грузов</option>
+                                                <option v-else>Перевозка опасных и легко воспламеняющихся грузов</option>
+                                                <option v-if="'{{osago_ugsk.target}}' == 'Прокат/Краткосрочная аренда'" selected>Прокат/Краткосрочная аренда</option>
+                                                <option v-else>Прокат/Краткосрочная аренда</option>
+                                                <option v-if="'{{osago_ugsk.target}}' == 'Прочие'" selected>Прочие</option>
+                                                <option v-else>Прочие</option>
+                                                <option v-if="'{{osago_ugsk.target}}' == 'Регулярные/по заказам пассажирские перевозки'" selected>Регулярные/по заказам пассажирские перевозки</option>
+                                                <option v-else>Регулярные/по заказам пассажирские перевозки</option>
+                                                <option v-if="'{{osago_ugsk.target}}' == 'Скорая помощь'" selected>Скорая помощь</option>
+                                                <option v-else>Скорая помощь</option>
+                                                <option v-if="'{{osago_ugsk.target}}' == 'Такси'" selected>Такси</option>
+                                                <option v-else>Такси</option>
+                                                <option v-if="'{{osago_ugsk.target}}' == 'Учебная езда'" selected>Учебная езда</option>
+                                                <option v-else>Учебная езда</option>
+                                                <option v-if="'{{osago_ugsk.target}}' == 'Экстренные и коммунальные службы'" selected>Экстренные и коммунальные службы</option>
+                                                <option v-else>Экстренные и коммунальные службы</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label class="col-md-2 col-form-label fw-bold">Прицеп</label>
+                                        <div class="col-md-10">
+                                            <div class="square-switch">
+                                                <input type="checkbox" id="pricep" switch="none" checked="" name="pricep" v-model="pricep">
+                                                <label for="pricep" data-on-label="Да" data-off-label="Нет"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                       <label for="mark" class="col-md-2 col-form-label fw-bold">Марка</label>
+                                        <div class="col-md-10">
+                                            <input class="form-select" name="mark" id="mark" list="datalistOptionsMark" @change="load_model" v-model="selected_mark" autocomplete="off">
+                                            <datalist id="datalistOptionsMark">
+                                                {% for mark in marks%}
+                                                    <option>{{mark}}</option>
+                                                {% endfor %}
+                                            </datalist>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                       <label for="model" class="col-md-2 col-form-label fw-bold">Модель</label>
+                                        <div class="col-md-10">
+                                            <input class="form-select" name="model" id="model" list="datalistOptionsModel" v-model="selected_model" @change="select_model" autocomplete="off">
+                                            <datalist id="datalistOptionsModel">
+                                                <option v-for="(data_model, model) in json_model.data">
+                                                    {% raw %}
+                                                        {{ model }}
+                                                    {% endraw %}
+                                                </option>
+                                            </datalist>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="year" class="col-md-2 col-form-label fw-bold">Год выпуска</label>
+                                        <div class="col-md-10">
+                                            <input id="year" class="form-control input-mask" name="year" v-model="auto_year" @change="load_modification">
+                                        </div>
+                                    </div>
+
+                                    <div v-show="selected_mark.search('ДРУГОЕ ТС')!= -1">
+                                        <div class="mb-3 row">
+                                            <label for="brand_name_other" class="col-md-2 col-form-label fw-bold">Марка по ПТС</label>
+                                            <div class="col-md-10">
+                                                <input class="form-control" type="text" id="brand_name_other" name="brand_name_other" value="{{osago_ugsk.brand_name_other}}">
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3 row">
+                                            <label for="model_name_other" class="col-md-2 col-form-label fw-bold">Модель по ПТС</label>
+                                            <div class="col-md-10">
+                                                <input class="form-control" type="text" id="model_name_other" name="model_name_other" value="{{osago_ugsk.model_name_other}}">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div v-show="selected_mark.search('ДРУГОЕ ТС')!= -1">
+                                        <div class="mb-3 row">
+                                            <label for="powers" class="col-md-2 col-form-label fw-bold">Мощность л/c</label>
+                                            <div class="col-md-10">
+                                                <input class="form-control" type="text" id="powers" name="powers" v-model="powers">
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3 row">
+                                            <label for="category" class="col-md-2 col-form-label fw-bold">Категория ТС</label>
+                                            <div class="col-md-10">
+                                                <select class="form-select" name="category" id="category" v-model="category" @change="select_category" required>
+                                                    <option v-if="'{{osago_ugsk.category}}' == 'A - мотоциклы'" selected>A - мотоциклы</option>
+                                                    <option v-else>A - мотоциклы</option>
+                                                    <option v-if="'{{osago_ugsk.category}}' == 'B - легковые'" selected>B - легковые</option>
+                                                    <option v-else>B - легковые</option>
+                                                    <option v-if="'{{osago_ugsk.category}}' == 'C - грузовые'" selected>C - грузовые</option>
+                                                    <option v-else>C - грузовые</option>
+                                                    <option v-if="'{{osago_ugsk.category}}' == 'D - автобусы'" selected>D - автобусы</option>
+                                                    <option v-else>D - автобусы</option>
+                                                    <option v-if="'{{osago_ugsk.category}}' == 'E - тракторы'" selected>E - тракторы</option>
+                                                    <option v-else>E - тракторы</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div v-show="selected_mark.search('ДРУГОЕ ТС') == -1">
+                                        <div class="mb-3 row">
+                                            <label for="modification" class="col-md-2 col-form-label fw-bold">Модификация</label>
+                                            <div class="col-md-10">
+                                                <input class="form-select" id="modification" list="datalistOptionsModification" v-model="selected_modification" @change="select_modification" autocomplete="off">
+                                                <datalist id="datalistOptionsModification">
+                                                    <option v-for="(mod) in json_mod.data">
+                                                        {% raw %}
+                                                            {{mod.modification_name}}
+                                                        {% endraw %}
+                                                    </option>
+                                                </datalist>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" v-show="category=='C - грузовые' ">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title text-primary">Данные для категории "C"</h4>
+
+                                    <div class="mb-3 row">
+                                        <label for="max_mass" class="col-md-2 col-form-label fw-bold">Максимальная масса</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="max_mass" name="max_mass" value="{{osago_ugsk.max_mass}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" v-show="category=='D - автобусы' ">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title text-primary">Данные для категории "D"</h4>
+
+                                    <div class="mb-3 row">
+                                        <label for="count_pass_mest" class="col-md-2 col-form-label fw-bold">Колличество пассажирских мест</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="count_pass_mest" name="count_pass_mest" value="{{osago_ugsk.count_pass_mest}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title text-primary">Тип документа</h4>
+
+                                <div class="mb-3 row" id="v-type-doc">
+                                    <label for="type_document" class="col-md-2 col-form-label fw-bold">Документ</label>
+                                    <div class="col-md-10">
+                                        <select class="form-select" name="type_document" id="type_document">
+                                            <option v-if="'{{osago_ugsk.type_document}}' == 'ПТС'" selected>ПТС</option>
+                                            <option v-else>ПТС</option>
+                                            <option v-if="'{{osago_ugsk.type_document}}' == 'СТС'" selected>СТС</option>
+                                            <option v-else>СТС</option>
+                                            <option v-if="'{{osago_ugsk.type_document}}' == 'ЭПТС'" selected>ЭПТС</option>
+                                            <option v-else>ЭПТС</option>
+                                            <option v-if="'{{osago_ugsk.type_document}}' == 'ПСМ'" selected>ПСМ</option>
+                                            <option v-else>ПСМ</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title text-primary">СТС-ПТС</h4>
+
+                                <div class="mb-3 row">
+                                    <label for="ctc_ptc_seriya" class="col-md-2 col-form-label fw-bold">Серия</label>
+                                    <div class="col-md-10">
+                                        <input id="ctc_ptc_seriya" class="form-control" type="text" name="ctc_ptc_seriya" value="{{osago_ugsk.ctc_ptc_seriya}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="ctc_ptc_number" class="col-md-2 col-form-label fw-bold">Номер</label>
+                                    <div class="col-md-10">
+                                        <input id="ctc_ptc_number" class="form-control" type="text" name="ctc_ptc_number" value="{{osago_ugsk.ctc_ptc_number}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="ctc_ptc_vidach" class="col-md-2 col-form-label fw-bold">Дата выдачи</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="date" id="ctc_ptc_vidach" name="ctc_ptc_vidach" value="{{osago_ugsk.ctc_ptc_vidach}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="ctc_ptc_reg_znak" class="col-md-2 col-form-label fw-bold">Рег. знак (без региона)</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="ctc_ptc_reg_znak" name="ctc_ptc_reg_znak" value="{{osago_ugsk.ctc_ptc_reg_znak}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="auto_region" class="col-md-2 col-form-label fw-bold">Регион авто</label>
+                                    <div class="col-md-10">
+                                        <input id="auto_region" class="form-control input-mask" name="auto_region" value="{{osago_ugsk.auto_region}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="ctc_ptc_vin" class="col-md-2 col-form-label fw-bold">VIN</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="ctc_ptc_vin" name="ctc_ptc_vin" value="{{osago_ugsk.ctc_ptc_vin}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="ctc_ptc_nomer_shassi" class="col-md-2 col-form-label fw-bold">Номер шасси</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="ctc_ptc_nomer_shassi" name="ctc_ptc_nomer_shassi" value="{{osago_ugsk.ctc_ptc_nomer_shassi}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="ctc_ptc_nomer_cusov" class="col-md-2 col-form-label fw-bold">Номер кузова</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="ctc_ptc_nomer_cusov" name="ctc_ptc_nomer_cusov" value="{{osago_ugsk.ctc_ptc_nomer_cusov}}">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="voditeli">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title text-primary">Водители</h4>
+
+                                    <div class="mb-3 row">
+                                        <label class="col-md-2 col-form-label fw-bold">С ограничением</label>
+                                        <div class="col-md-10">
+                                            <div class="square-switch">
+                                                <input type="checkbox" id="c_ogr_or_not" switch="none" checked="" name="c_ogr_or_not" v-model="checked">
+                                                <label for="c_ogr_or_not" data-on-label="Да" data-off-label="Нет"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row" v-show="checked">
+                                        <label for="count_vod" class="col-md-2 col-form-label fw-bold">Колличество водителей</label>
+                                        <div class="col-md-10">
+                                            <select class="form-select" id="count_vod" v-model="selected">
+                                                <option>0</option>
+                                                <option>1</option>
+                                                <option>2</option>
+                                                <option>3</option>
+                                                <option>4</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" v-show="selected!=0">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title text-primary">Водитель-1</h4>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_1_surname" class="col-md-2 col-form-label fw-bold">Фамилия</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_1_surname" name="vod_1_surname" value="{{osago_ugsk.voditeli[0].surname}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_1_name" class="col-md-2 col-form-label fw-bold">Имя</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_1_name" name="vod_1_name" value="{{osago_ugsk.voditeli[0].name}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_1_otchestvo" class="col-md-2 col-form-label fw-bold">Отчество</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_1_otchestvo" name="vod_1_otchestvo" value="{{osago_ugsk.voditeli[0].otchestvo}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_1_birthday" class="col-md-2 col-form-label fw-bold">Дата рождения</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_1_birthday" name="vod_1_birthday" value="{{osago_ugsk.voditeli[0].birthday}}">
+                                        </div>
+                                    </div>
+
+                                    <h4 class="card-title text-primary">Водительское удостоверение</h4>
+                                    <div class="mb-3 row">
+                                        <label class="col-md-2 col-form-label fw-bold">Иностранные права</label>
+                                        <div class="col-md-10">
+                                            <div class="square-switch">
+                                                <input type="checkbox" id="vod_1_foreign_dl" switch="none" checked="" name="vod_1_foreigndl" v-model="vod_1_foreign_dl">
+                                                <label for="vod_1_foreign_dl" data-on-label="Да" data-off-label="Нет"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 row">
+                                        <label for="vod_1_seriya_vu" class="col-md-2 col-form-label fw-bold">Серия</label>
+                                        <div class="col-md-10">
+                                            <input id="vod_1_seriya_vu" class="form-control" type="text" name="vod_1_seriya_vu" value="{{osago_ugsk.voditeli[0].seriya_vu}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_1_nomer_vu" class="col-md-2 col-form-label fw-bold">Номер</label>
+                                        <div class="col-md-10">
+                                            <input id="vod_1_nomer_vu" class="form-control" type="text" name="vod_1_nomer_vu" value="{{osago_ugsk.voditeli[0].nomer_vu}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_1_data_vidachi_vu" class="col-md-2 col-form-label fw-bold">Дата выдачи</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_1_data_vidachi_vu" name="vod_1_data_vidachi_vu" value="{{osago_ugsk.voditeli[0].data_vidachi_vu}}">
+                                        </div>
+                                    </div>
+
+                                    <br>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_1_nachalo_staga" class="col-md-2 col-form-label fw-bold">Начало стажа</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_1_nachalo_staga" name="vod_1_nachalo_staga" value="{{osago_ugsk.voditeli[0].nachalo_staga}}">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" v-show="selected==2 || selected==3 || selected==4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title text-primary">Водитель-2</h4>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_2_surname" class="col-md-2 col-form-label fw-bold">Фамилия</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_2_surname" name="vod_2_surname" value="{{osago_ugsk.voditeli[1].surname}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_2_name" class="col-md-2 col-form-label fw-bold">Имя</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_2_name" name="vod_2_name" value="{{osago_ugsk.voditeli[1].name}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_2_otchestvo" class="col-md-2 col-form-label fw-bold">Отчество</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_2_otchestvo" name="vod_2_otchestvo" value="{{osago_ugsk.voditeli[1].otchestvo}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_2_birthday" class="col-md-2 col-form-label fw-bold">Дата рождения</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_2_birthday" name="vod_2_birthday" value="{{osago_ugsk.voditeli[1].birthday}}">
+                                        </div>
+                                    </div>
+
+                                    <h4 class="card-title text-primary">Водительское удостоверение</h4>
+                                    <div class="mb-3 row">
+                                        <label class="col-md-2 col-form-label fw-bold">Иностранные права</label>
+                                        <div class="col-md-10">
+                                            <div class="square-switch">
+                                                <input type="checkbox" id="vod_2_foreign_dl" switch="none" checked="" name="vod_2_foreigndl" v-model="vod_2_foreign_dl">
+                                                <label for="vod_2_foreign_dl" data-on-label="Да" data-off-label="Нет"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 row">
+                                        <label for="vod_2_seriya_vu" class="col-md-2 col-form-label fw-bold">Серия</label>
+                                        <div class="col-md-10">
+                                            <input id="vod_2_seriya_vu" class="form-control" type="text" name="vod_2_seriya_vu" value="{{osago_ugsk.voditeli[1].seriya_vu}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_2_nomer_vu" class="col-md-2 col-form-label fw-bold">Номер</label>
+                                        <div class="col-md-10">
+                                            <input id="vod_2_nomer_vu" class="form-control" type="text" name="vod_2_nomer_vu" value="{{osago_ugsk.voditeli[1].nomer_vu}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_2_data_vidachi_vu" class="col-md-2 col-form-label fw-bold">Дата выдачи</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_2_data_vidachi_vu" name="vod_2_data_vidachi_vu" value="{{osago_ugsk.voditeli[1].data_vidachi_vu}}">
+                                        </div>
+                                    </div>
+
+                                    <br>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_2_nachalo_staga" class="col-md-2 col-form-label fw-bold">Начало стажа</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_2_nachalo_staga" name="vod_2_nachalo_staga" value="{{osago_ugsk.voditeli[1].nachalo_staga}}">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" v-show="selected==3 || selected==4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title text-primary">Водитель-3</h4>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_3_surname" class="col-md-2 col-form-label fw-bold">Фамилия</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_3_surname" name="vod_3_surname" value="{{osago_ugsk.voditeli[2].surname}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_3_name" class="col-md-2 col-form-label fw-bold">Имя</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_3_name" name="vod_3_name" value="{{osago_ugsk.voditeli[2].name}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_3_otchestvo" class="col-md-2 col-form-label fw-bold">Отчество</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_3_otchestvo" name="vod_3_otchestvo" value="{{osago_ugsk.voditeli[2].otchestvo}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_3_birthday" class="col-md-2 col-form-label fw-bold">Дата рождения</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_3_birthday" name="vod_3_birthday" value="{{osago_ugsk.voditeli[2].birthday}}">
+                                        </div>
+                                    </div>
+
+                                    <h4 class="card-title text-primary">Водительское удостоверение</h4>
+                                    <div class="mb-3 row">
+                                        <label class="col-md-2 col-form-label fw-bold">Иностранные права</label>
+                                        <div class="col-md-10">
+                                            <div class="square-switch">
+                                                <input type="checkbox" id="vod_3_foreign_dl" switch="none" checked="" name="vod_3_foreigndl" v-model="vod_3_foreign_dl">
+                                                <label for="vod_3_foreign_dl" data-on-label="Да" data-off-label="Нет"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 row">
+                                        <label for="vod_3_seriya_vu" class="col-md-2 col-form-label fw-bold">Серия</label>
+                                        <div class="col-md-10">
+                                            <input id="vod_3_seriya_vu" class="form-control" type="text" name="vod_3_seriya_vu" value="{{osago_ugsk.voditeli[2].seriya_vu}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_3_nomer_vu" class="col-md-2 col-form-label fw-bold">Номер</label>
+                                        <div class="col-md-10">
+                                            <input id="vod_3_nomer_vu" class="form-control" type="text" name="vod_3_nomer_vu" value="{{osago_ugsk.voditeli[2].nomer_vu}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_3_data_vidachi_vu" class="col-md-2 col-form-label fw-bold">Дата выдачи</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_3_data_vidachi_vu" name="vod_3_data_vidachi_vu" value="{{osago_ugsk.voditeli[2].data_vidachi_vu}}">
+                                        </div>
+                                    </div>
+
+                                    <br>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_3_nachalo_staga" class="col-md-2 col-form-label fw-bold">Начало стажа</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_3_nachalo_staga" name="vod_3_nachalo_staga" value="{{osago_ugsk.voditeli[2].nachalo_staga}}">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" v-show="selected==4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title text-primary">Водитель-4</h4>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_4_surname" class="col-md-2 col-form-label fw-bold">Фамилия</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_4_surname" name="vod_4_surname" value="{{osago_ugsk.voditeli[3].surname}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_4_name" class="col-md-2 col-form-label fw-bold">Имя</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_4_name" name="vod_4_name" value="{{osago_ugsk.voditeli[3].name}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_4_otchestvo" class="col-md-2 col-form-label fw-bold">Отчество</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_4_otchestvo" name="vod_4_otchestvo" value="{{osago_ugsk.voditeli[3].otchestvo}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_4_birthday" class="col-md-2 col-form-label fw-bold">Дата рождения</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_4_birthday" name="vod_4_birthday" value="{{osago_ugsk.voditeli[3].birthday}}">
+                                        </div>
+                                    </div>
+
+                                    <h4 class="card-title text-primary">Водительское удостоверение</h4>
+                                    <div class="mb-3 row">
+                                        <label class="col-md-2 col-form-label fw-bold">Иностранные права</label>
+                                        <div class="col-md-10">
+                                            <div class="square-switch">
+                                                <input type="checkbox" id="vod_4_foreign_dl" switch="none" checked="" name="vod_4_foreigndl" v-model="vod_4_foreign_dl">
+                                                <label for="vod_4_foreign_dl" data-on-label="Да" data-off-label="Нет"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 row">
+                                        <label for="vod_4_seriya_vu" class="col-md-2 col-form-label fw-bold">Серия</label>
+                                        <div class="col-md-10">
+                                            <input id="vod_4_seriya_vu" class="form-control" type="text" name="vod_4_seriya_vu" value="{{osago_ugsk.voditeli[3].seriya_vu}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_4_nomer_vu" class="col-md-2 col-form-label fw-bold">Номер</label>
+                                        <div class="col-md-10">
+                                            <input id="vod_4_nomer_vu" class="form-control" type="text" name="vod_4_nomer_vu" value="{{osago_ugsk.voditeli[3].nomer_vu}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_4_data_vidachi_vu" class="col-md-2 col-form-label fw-bold">Дата выдачи</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_4_data_vidachi_vu" name="vod_4_data_vidachi_vu" value="{{osago_ugsk.voditeli[3].data_vidachi_vu}}">
+                                        </div>
+                                    </div>
+
+                                    <br>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_4_nachalo_staga" class="col-md-2 col-form-label fw-bold">Начало стажа</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_4_nachalo_staga" name="vod_4_nachalo_staga" value="{{osago_ugsk.voditeli[3].nachalo_staga}}">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title text-primary">Сроки</h4>
+
+                                <div class="mb-3 row">
+                                    <label for="OSAGO_start" class="col-md-2 col-form-label fw-bold">Дата начала ОСАГО</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="date" id="OSAGO_start" name="OSAGO_start" value="{{osago_ugsk.OSAGO_start}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="OSAGO_count_mouth" class="col-md-2 col-form-label fw-bold">Колличество месяцев</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="OSAGO_count_mouth" name="OSAGO_count_mouth" value="{{osago_ugsk.OSAGO_count_mouth}}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" {% if not osago_ugsk.is_main_osago %} hidden {% endif %}>
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title text-primary">Страховые компании</h4>
+                                <div class="row">
+                                    <div class="col-xl-3 col-sm-6">
+                                        {% for comp in strah_comps[:10] %}
+                                            <div class="form-check form-checkbox-outline form-check-primary mb-3">
+                                                {% if osago_ugsk.strah_comp.find(comp) != -1 %}
+                                                    <input class="form-check-input" type="checkbox" id="strah_{{comp}}" name="{{comp}}" checked>
+                                                {% else %}
+                                                    <input class="form-check-input" type="checkbox" id="strah_{{comp}}" name="{{comp}}">
+                                                {% endif %}
+                                                <label class="form-check-label" for="strah_{{comp}}"> {{comp}} </label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="col-xl-3 col-sm-6">
+                                        {% for comp in strah_comps[10:20] %}
+                                            <div class="form-check form-checkbox-outline form-check-primary mb-3">
+                                                {% if osago_ugsk.strah_comp.find(comp) != -1 %}
+                                                    <input class="form-check-input" type="checkbox" id="strah_{{comp}}" name="{{comp}}" checked>
+                                                {% else %}
+                                                    <input class="form-check-input" type="checkbox" id="strah_{{comp}}" name="{{comp}}">
+                                                {% endif %}
+                                                <label class="form-check-label" for="strah_{{comp}}"> {{comp}} </label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="col-xl-3 col-sm-6">
+                                        {% for comp in strah_comps[20:30] %}
+                                            <div class="form-check form-checkbox-outline form-check-primary mb-3">
+                                                {% if osago_ugsk.strah_comp.find(comp) != -1 %}
+                                                    <input class="form-check-input" type="checkbox" id="strah_{{comp}}" name="{{comp}}" checked>
+                                                {% else %}
+                                                    <input class="form-check-input" type="checkbox" id="strah_{{comp}}" name="{{comp}}">
+                                                {% endif %}
+                                                <label class="form-check-label" for="strah_{{comp}}"> {{comp}} </label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="col-xl-3 col-sm-6">
+                                        {% for comp in strah_comps[30:] %}
+                                            <div class="form-check form-checkbox-outline form-check-primary mb-3">
+                                                {% if osago_ugsk.strah_comp.find(comp) != -1 %}
+                                                    <input class="form-check-input" type="checkbox" id="strah_{{comp}}" name="{{comp}}" checked>
+                                                {% else %}
+                                                    <input class="form-check-input" type="checkbox" id="strah_{{comp}}" name="{{comp}}">
+                                                {% endif %}
+                                                <label class="form-check-label" for="strah_{{comp}}"> {{comp}} </label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title text-primary">Другое</h4>
+
+                                <div class="mb-3 row">
+                                    <label for="trans_num" class="col-md-2 col-form-label fw-bold">Номер сделки</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="trans_num" name="trans_num" value="{{osago_ugsk.trans_num}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="est_price_policy" class="col-md-2 col-form-label fw-bold">Заявленная стоимость полиса</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="est_price_policy" name="est_price_policy" value="{{osago_ugsk.est_price_policy}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="real_price_policy" class="col-md-2 col-form-label fw-bold">Фактическая стоимость полиса</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="real_price_policy" name="real_price_policy" value="{{osago_ugsk.real_price_policy}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="num_group_wa" class="col-md-2 col-form-label fw-bold">Номер группы WA</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="num_group_wa" name="num_group_wa" value="{{osago_ugsk.num_group_wa}}">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row me-auto">
+                    <button type="submit" class="btn btn-primary btn-lg waves-effect waves-light">Сохранить</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        Vue.createApp({
+          data() {
+            return {
+
+            };
+          }
+        }).mount('#oformitel_row')
+
+        Vue.createApp({
+          data() {
+            return {
+                selected_address_strah: "{{osago_ugsk.pass_address}}",
+                json_address_strah: {data:[]}
+            };
+          },
+          methods: {
+              select_address_strah() {
+                  this.selected_address_strah = this.selected_address_strah.replace('.', ' ')
+                  axios
+                      .post("{{url_for('api.dadata_address')}}", {"text_address": this.selected_address_strah})
+                      .then(response => (this.json_address_strah = response.data));
+
+                  var strah_address_list = this.json_address_strah.data;
+                  $("#pass_address").autocomplete({
+                      source: function (request, response) {
+                          var id_item = 1;
+                          var red_strah_address_list = strah_address_list.map(function(x) {
+                              return ({
+                                  id: id_item++,
+                                  name: x,
+                                  value: x
+                              });
+                            });
+                          response(red_strah_address_list);return;},
+                    }).focus(function() {
+                        $(this).autocomplete('search', "")
+                    })
+              },
+          }
+        }).mount('#strah_row')
+
+        Vue.createApp({
+          data() {
+              if ('{{osago_ugsk.sobstv_yavl_strah}}' != '') {
+                  return {
+                      selected_address_sobstv: "{{osago_ugsk.sobstv_pass_address}}",
+                        json_address_sobstv: {data:[]},
+                      checked: true
+                    };
+              } else {
+                  return {
+                      selected_address_sobstv: "{{osago_ugsk.sobstv_pass_address}}",
+                        json_address_sobstv: {data:[]},
+                      checked: false
+                  }
+              }
+
+          },
+            methods: {
+                select_address_sobstv() {
+                    this.selected_address_sobstv = this.selected_address_sobstv.replace('.', ' ')
+                    axios
+                        .post("{{url_for('api.dadata_address')}}", {"text_address": this.selected_address_sobstv})
+                        .then(response => (this.json_address_sobstv = response.data));
+
+                    var sobstv_address_list = this.json_address_sobstv.data;
+                      $("#sobstv_pass_address").autocomplete({
+                          source: function (request, response) {
+                              var id_item = 1;
+                              var red_sobstv_address_list = sobstv_address_list.map(function(x) {
+                                  return ({
+                                      id: id_item++,
+                                      name: x,
+                                      value: x
+                                  });
+                                });
+                              response(red_sobstv_address_list);return;},
+                        }).focus(function() {
+                            $(this).autocomplete('search', "")
+                        })
+                },
+                set_sobstv_strah() {
+                  if (this.checked) {
+                        document.getElementById("sobstv_surname").value = document.getElementById("name").value;
+                        document.getElementById("sobstv_name").value = document.getElementById("surname").value;
+                        document.getElementById("sobstv_otchestvo").value = document.getElementById("otchestvo").value;
+                        document.getElementById("sobstv_birthday").value = document.getElementById("birthday").value;
+
+                        document.getElementById("sobstv_pass_seriya").value = document.getElementById("pass_seriya").value;
+                        document.getElementById("sobstv_pass_number").value = document.getElementById("pass_number").value;
+                        document.getElementById("sobstv_pass_address").value = document.getElementById("pass_address").value;
+                        document.getElementById("sobstv_pass_vidach").value = document.getElementById("pass_vidach").value;
+                    }
+                  else {
+                        document.getElementById("sobstv_surname").value = "";
+                        document.getElementById("sobstv_name").value = "";
+                        document.getElementById("sobstv_otchestvo").value = "";
+                        document.getElementById("sobstv_birthday").value = "";
+
+                        document.getElementById("sobstv_pass_seriya").value = "";
+                        document.getElementById("sobstv_pass_number").value = "";
+                        document.getElementById("sobstv_pass_address").value = "";
+                        document.getElementById("sobstv_pass_vidach").value = "";
+                    }
+              },
+            }
+        }).mount('#v-sobstv')
+
+        Vue.createApp({
+          data() {
+              if ('{{osago_ugsk.c_ogr_or_not}}' != 'Без ограничений') {
+                  var checked = true;
+              } else {
+                  var checked = false;
+              }
+
+              if ('{{osago_ugsk.voditeli[3].surname}}' != ''){
+                  var selected = 4;
+              }
+              else if ('{{osago_ugsk.voditeli[2].surname}}' != ''){
+                  var selected = 3;
+              }
+              else if ('{{osago_ugsk.voditeli[1].surname}}' != ''){
+                  var selected = 2;
+              }
+              else if ('{{osago_ugsk.voditeli[0].surname}}' != ''){
+                  var selected = 1;
+              }
+              else {
+                  var selected = 0;
+              }
+
+              if ('{{ osago_ugsk.voditeli[0].foreign_dl }}' == 'True') {
+                  var vod_1_foreign_dl = true;
+              }
+              else if ('{{ osago_ugsk.voditeli[0].foreign_dl }}' != 'True') {
+                  var vod_1_foreign_dl = false;
+              }
+              if ('{{ osago_ugsk.voditeli[1].foreign_dl }}' == 'True') {
+                  var vod_2_foreign_dl = true;
+              }
+              else if ('{{ osago_ugsk.voditeli[1].foreign_dl }}' != 'True') {
+                  var vod_2_foreign_dl = false;
+              }
+              if ('{{ osago_ugsk.voditeli[2].foreign_dl }}' == 'True') {
+                  var vod_3_foreign_dl = true;
+              }
+              else if ('{{ osago_ugsk.voditeli[2].foreign_dl }}' != 'True') {
+                  var vod_3_foreign_dl = false;
+              }
+              if ('{{ osago_ugsk.voditeli[3].foreign_dl }}' == 'True') {
+                  var vod_4_foreign_dl = true;
+              }
+              else if ('{{ osago_ugsk.voditeli[3].foreign_dl }}' != 'True') {
+                  var vod_4_foreign_dl = false;
+              }
+
+
+            return {
+              checked: checked,
+                selected: selected,
+                vod_1_foreign_dl: vod_1_foreign_dl,
+                vod_2_foreign_dl: vod_2_foreign_dl,
+                vod_3_foreign_dl: vod_3_foreign_dl,
+                vod_4_foreign_dl: vod_4_foreign_dl
+            }
+          }
+        }).mount('#voditeli')
+
+        Vue.createApp({
+          data() {
+              if ('{{ osago_ugsk.pricep }}' == 'Есть прицеп'){
+                  var pricep = true;
+              }
+              else {
+                  var pricep = false;
+              }
+            return {
+                selected_mark: '{{osago_ugsk.brand_name}}',
+                json_model: {data:[]},
+                selected_model: '{{osago_ugsk.model_name}}',
+                category: "{{osago_ugsk.category}}",
+                json_mod: "",
+                auto_year: '{{osago_ugsk.year}}',
+                set_conf_ruchn: "",
+                selected_modification: '{{osago_ugsk.modification_name}}',
+                pricep: pricep,
+                powers: "{{osago_ugsk.powers}}",
+
+                auto_type: "{{osago_ugsk.auto_type}}",
+                brand: "{{osago_ugsk.brand}}",
+                brand_name: "{{osago_ugsk.brand_name}}",
+                model: "{{osago_ugsk.model}}",
+                model_name: "{{osago_ugsk.model_name}}",
+                modification_name: "{{osago_ugsk.modification_name}}",
+                modification: "{{osago_ugsk.modification}}"
+            }
+          },
+            methods: {
+                load_model() {
+                  axios
+                      .post("{{url_for('alfa.load_models')}}", {"mark":this.selected_mark})
+                      .then(response => (this.json_model = response.data));
+                  if (this.selected_mark.search("ДРУГОЕ ТС") != -1) {
+                        this.set_conf_ruchn = true;
+                    }
+                    else {
+                        this.set_conf_ruchn = false;
+                    }
+                },
+                select_category(){
+                    if (this.category == "B - легковые"){
+                        this.auto_type = 'Легковой а/м';
+                    }
+                    else if (this.category == "A - мотоциклы"){
+                        this.auto_type = 'Мотоциклы и мотороллеры';
+                    }
+                    else if (this.category == "C - грузовые"){
+                        this.auto_type = 'Грузовой а/м';
+                    }
+                    else if (this.category == "D - автобусы"){
+                        this.auto_type = 'Автобусы';
+                    }
+                    else if (this.category == "E - тракторы"){
+                        this.auto_type = 'Трактора, самоходные и иные машины';
+                    }
+                },
+                select_model(){
+                    this.brand = this.json_model.data[this.selected_model]["brand"];
+                    this.brand_name = this.json_model.data[this.selected_model]["brand_name"];
+                    this.model = this.json_model.data[this.selected_model]["model"];
+                    this.model_name = this.json_model.data[this.selected_model]["model_name"];
+                },
+                load_modification(){
+                    axios
+                      .post("{{url_for('alfa.load_modification')}}", {"category": this.category, "brand":this.brand, "model": this.model, "year": this.auto_year})
+                      .then(response => (this.json_mod = response.data));
+                },
+                select_modification(){
+                    this.powers = this.json_mod.data[this.selected_modification]["powers"]
+                    this.modification_name = this.json_mod.data[this.selected_modification]["modification_name"];
+                    this.modification = this.json_mod.data[this.selected_modification]["modification"];
+                }
+              },
+
+
+        }).mount('#auto')
+
+        Vue.createApp({}).mount('#v-type-doc')
+
+    </script>
+{% endblock %}

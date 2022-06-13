@@ -1,0 +1,94 @@
+{% extends "base_page.html" %}
+
+{% block head %}
+    <title>Добавить пользователя</title>
+{% endblock %}
+
+{% block body %}
+    <div class="page-content">
+        <div class="container-fluid">
+            <form action="" method="post">
+                <input type="hidden" name="id" value="{{user.id}}">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title text-primary">Редактировать пользователя</h4>
+                                    <div class="mb-3 row">
+                                        <label class="col-md-2 col-form-label fw-bold" for="surname">Фамилия</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="surname" name="surname" value="{{user.surname}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label class="col-md-2 col-form-label fw-bold" for="name">Имя</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="name" name="name" value="{{user.name}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label class="col-md-2 col-form-label fw-bold" for="otchestvo">Отчество</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="otchestvo" name="otchestvo" value="{{user.otchestvo}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label class="col-md-2 col-form-label fw-bold" for="login">Логин</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="login" name="login" value="{{user.username}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="password" class="col-md-2 col-form-label fw-bold">Пароль</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="password" name="password" value="{{user.password_hash}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="role" class="col-md-2 col-form-label fw-bold">Роль</label>
+                                        <div class="col-md-10">
+                                            <select class="form-select" name="role" id="role">
+                                                {% if user.role.name == 'Отдел документов' %}
+                                                    <option selected>Отдел документов</option>
+                                                {% else %}
+                                                    <option>Отдел документов</option>
+                                                {% endif %}
+                                                {% if user.role.name == 'Админ' %}
+                                                    <option selected>Админ</option>
+                                                {% else %}
+                                                    <option>Админ</option>
+                                                {% endif %}
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="email_address" class="col-md-2 col-form-label fw-bold">Почта логин</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="email_address" name="email_address" value="{{user.email_address}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="email_password" class="col-md-2 col-form-label fw-bold">Почта пароль</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="email_password" name="email_password" value="{{user.email_password}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="row me-auto">
+                                        <button type="submit" class="btn btn-primary btn-lg waves-effect waves-light">Сохранить</button>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

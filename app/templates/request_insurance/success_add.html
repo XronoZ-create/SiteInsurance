@@ -1,0 +1,41 @@
+{% extends "base_assets.html" %}
+
+{% block head %}
+    <title>Успешно добавленно</title>
+{% endblock %}
+
+{% block body %}
+    <div class="account-pages my-5 pt-sm-5">
+        <div class="container">
+            <!-- end row -->
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6 col-xl-5">
+                    <div class="card">
+
+                        <div class="card-body">
+
+                            <div class="p-2">
+                                <div class="text-center">
+
+                                    <div class="avatar-md mx-auto">
+                                        <div class="avatar-title rounded-circle bg-light">
+                                            <i class="fas fa-grin-hearts h1 mb-0 text-primary"></i>
+                                        </div>
+                                    </div>
+                                    <div class="p-2 mt-4">
+                                        <h4>Успешно !</h4>
+                                        <p class="text-muted">Осаго успешно добавленно</p>
+                                        <div class="mt-4">
+                                            <a href="{{url_for('main.index')}}" class="btn btn-success">Вернуться на главную страницу</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,145 @@
+{% extends "base_page.html" %}
+
+{% block head %}
+    <title>Удаленные заявки</title>
+{% endblock %}
+
+{% block body %}
+    <div class="page-content">
+    <div class="container-fluid">
+
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                    <h4 class="mb-sm-0 font-size-18">Удаленные заявки</h4>
+                </div>
+            </div>
+        </div>
+        <!-- end page title -->
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card" style="min-height: 600px;">
+                    <div class="card-body">
+                        <div class="table-rep-plugin">
+                            <div class="table-responsive mb-0" data-pattern="priority-columns" style="height: 600px;overflow: scroll;">
+                                <table id="tech-companies-1" class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th data-priority="3">#</th>
+                                                <th>Кабинет</th>
+                                                <th data-priority="6">Операции</th>
+                                                <th data-priority="3">Статус</th>
+                                                <th data-priority="1">История</th>
+                                                <th data-priority="1">Ответственный</th>
+                                                <th data-priority="3">Номер сделки</th>
+                                                <th data-priority="1">Страхователь</th>
+                                                <th data-priority="6">Страховая компания</th>
+                                                <th data-priority="3">Ссылка</th>
+                                                <th data-priority="3">Логин РСА</th>
+                                                <th data-priority="6">Пароль РСА</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                            {% for osago in all_osago%}
+                                                <tr>
+                                                    <form action="" method="post" id="edit_form_{{ osago.id }}">
+                                                        <th>
+                                                            {{osago.id}}
+                                                            <input class="form-control" type="hidden" name="id" value="{{osago.id}}">
+                                                        </th>
+                                                        <th>
+                                                            {% if osago.type_osago == "osago_ugsk" %}
+                                                                Югория
+                                                            {% elif osago.type_osago == "osago_osk" %}
+                                                                ОСК
+                                                            {% elif osago.type_osago == "osago_21" %}
+                                                                21 Век
+                                                            {% endif %}
+                                                            <input class="form-control" type="hidden" name="type_osago" value="{{osago.type_osago}}" >
+                                                        </th>
+                                                        <th>
+                                                            <div class="btn-group mt-4 mt-md-0" role="group">
+                                                                <button type="submit" class="btn btn-secondary" form="edit_form_{{ osago.id }}" name="type_action" value="edit" title="Изменить">
+                                                                    <i class="dripicons-document-edit"></i>
+                                                                </button>
+                                                                <button type="submit" class="btn btn-secondary" form="edit_form_{{ osago.id }}" name="type_action" value="success" title="Успешно">
+                                                                    <i class="dripicons-thumbs-up"></i>
+                                                                </button>
+                                                                <button type="submit" class="btn btn-secondary" form="edit_form_{{ osago.id }}" name="type_action" value="active" title="Активно">
+                                                                    <i class="dripicons-rocket"></i>
+                                                                </button>
+                                                                <button type="submit" class="btn btn-secondary" form="edit_form_{{ osago.id }}" name="type_action" value="deep_delete" title="Удалить">
+                                                                    <i class="dripicons-trash"></i>
+                                                                </button>
+                                                            </div>
+                                                        </th>
+                                                        <th>
+                                                            <span class="badge
+                                                                {% if osago.status_osago.id == 1 %}
+                                                                    badge-soft-dark
+                                                                {% elif osago.status_osago.id == 2 %}
+                                                                    bg-info
+                                                                {% elif osago.status_osago.id == 3 %}
+                                                                    bg-warning
+                                                                {% elif osago.status_osago.id == 4 %}
+                                                                    bg-success
+                                                                {% elif osago.status_osago.id == 5 %}
+                                                                    bg-danger
+                                                                {% elif osago.status_osago.id == 6 %}
+                                                                    bg-danger
+                                                                {% endif %} ">{{ osago.status_osago.name }}
+                                                            </span>
+                                                        </th>
+                                                        <th>
+                                                            <div class="according" id="accordingStatus">
+                                                                <div class="accordion-item">
+                                                                    <h2 class="accordion-header" id="headingStatus">
+                                                                        <button class="accordion-button fw-medium collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="true" aria-controls="collapseStatus">
+                                                                        {{ osago.status_bot.split(',')[-1][:50] }}
+                                                                        </button>
+                                                                    </h2>
+                                                                    <div id="collapseStatus" class="accordion-collapse collapse" aria-labelledby="headingStatus" data-bs-parent="#accordingStatus" style="">
+                                                                        <div class="accordion-body">
+                                                                            <div class="text-muted">
+                                                                                {% for status in osago.status_bot.split(',')|reverse %}
+                                                                                    <span>{{ status[:50] }}</span><br>
+                                                                                    {% for i in range(50, status|length, 50) %}
+                                                                                        <span>&emsp;{{ status[i:i+50] }}</span><br>
+                                                                                    {% endfor %}
+                                                                                {% endfor %}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </th>
+                                                        <th>
+                                                            {{osago.user_name}}
+                                                        </th>
+                                                        <th>{{osago.trans_num}}</th>
+                                                        <th>{{osago.surname}} {{osago.name}} {{osago.otchestvo}}</th>
+                                                        <th>{{osago.strah_comp}}</th>
+                                                        <th>{% if osago.url_rca != '' %}<a target="_blank" rel="noopener noreferrer" href="{{osago.url_rca}}">РСА</a>{% endif %}</th>
+                                                        <th>{{osago.login_rca}}</th>
+                                                        <th>{{osago.password_rca}}</th>
+                                                    </form>
+
+                                                </tr>
+                                            {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div> <!-- end col -->
+        </div> <!-- end row -->
+
+    </div> <!-- container-fluid -->
+</div>
+<!-- End Page-content -->
+{% endblock %}

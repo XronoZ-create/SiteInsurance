@@ -1,0 +1,104 @@
+{% extends "base_page.html" %}
+
+{% block head %}
+    <title>Добавить ловилку</title>
+{% endblock %}
+
+{% block body %}
+    <div class="page-content">
+        <div class="container-fluid">
+            <form action="" method="post">
+                <input type="hidden" name="id" value="{{hook.id}}">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title text-primary">Изменить ловилку</h4>
+                                    <div class="mb-3 row">
+                                        <label class="col-md-2 col-form-label fw-bold" for="name">Название</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="input_url" name="name" value="{{hook.name}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label class="col-md-2 col-form-label fw-bold" for="input_url">Входная ссылка</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="input_url" name="input_url" value="{{hook.input_url}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <h4 class="card-title text-primary">Страховые компании</h4>
+                                                    <div class="row">
+                                                        <div class="col-xl-3 col-sm-6">
+                                                            {% for comp in strah_comps[:10] %}
+                                                                <div class="form-check form-checkbox-outline form-check-primary mb-3">
+                                                                    {% if hook.strah_comp.find(comp) != -1 %}
+                                                                        <input class="form-check-input" type="checkbox" id="strah_{{comp}}" name="{{comp}}" checked>
+                                                                    {% else %}
+                                                                        <input class="form-check-input" type="checkbox" id="strah_{{comp}}" name="{{comp}}">
+                                                                    {% endif %}
+                                                                    <label class="form-check-label" for="strah_{{comp}}"> {{comp}} </label>
+                                                                </div>
+                                                            {% endfor %}
+                                                        </div>
+
+                                                        <div class="col-xl-3 col-sm-6">
+                                                            {% for comp in strah_comps[10:20] %}
+                                                                <div class="form-check form-checkbox-outline form-check-primary mb-3">
+                                                                    {% if hook.strah_comp.find(comp) != -1 %}
+                                                                        <input class="form-check-input" type="checkbox" id="strah_{{comp}}" name="{{comp}}" checked>
+                                                                    {% else %}
+                                                                        <input class="form-check-input" type="checkbox" id="strah_{{comp}}" name="{{comp}}">
+                                                                    {% endif %}
+                                                                    <label class="form-check-label" for="strah_{{comp}}"> {{comp}} </label>
+                                                                </div>
+                                                            {% endfor %}
+                                                        </div>
+
+                                                        <div class="col-xl-3 col-sm-6">
+                                                            {% for comp in strah_comps[20:30] %}
+                                                                <div class="form-check form-checkbox-outline form-check-primary mb-3">
+                                                                    {% if hook.strah_comp.find(comp) != -1 %}
+                                                                        <input class="form-check-input" type="checkbox" id="strah_{{comp}}" name="{{comp}}" checked>
+                                                                    {% else %}
+                                                                        <input class="form-check-input" type="checkbox" id="strah_{{comp}}" name="{{comp}}">
+                                                                    {% endif %}
+                                                                    <label class="form-check-label" for="strah_{{comp}}"> {{comp}} </label>
+                                                                </div>
+                                                            {% endfor %}
+                                                        </div>
+
+                                                        <div class="col-xl-3 col-sm-6">
+                                                            {% for comp in strah_comps[30:] %}
+                                                                <div class="form-check form-checkbox-outline form-check-primary mb-3">
+                                                                    {% if hook.strah_comp.find(comp) != -1 %}
+                                                                        <input class="form-check-input" type="checkbox" id="strah_{{comp}}" name="{{comp}}" checked>
+                                                                    {% else %}
+                                                                        <input class="form-check-input" type="checkbox" id="strah_{{comp}}" name="{{comp}}">
+                                                                    {% endif %}
+                                                                    <label class="form-check-label" for="strah_{{comp}}"> {{comp}} </label>
+                                                                </div>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row me-auto">
+                                        <button type="submit" class="btn btn-primary btn-lg waves-effect waves-light">Сохранить</button>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

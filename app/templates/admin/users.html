@@ -1,0 +1,86 @@
+{% extends "base_page.html" %}
+
+{% block head %}
+    <title>Пользователи</title>
+{% endblock %}
+
+{% block body %}
+    <div class="page-content">
+    <div class="container-fluid">
+
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                    <h4 class="mb-sm-0 font-size-18">Пользователи</h4>
+                </div>
+            </div>
+        </div>
+        <!-- end page title -->
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card" style="min-height: 600px;">
+                    <div class="card-body">
+                        <div class="table-rep-plugin">
+                            <div class="table-responsive mb-0" data-pattern="priority-columns">
+                                <table id="tech-companies-1" class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th data-priority="3">#</th>
+                                            <th>Фамилия</th>
+                                            <th data-priority="1">Имя</th>
+                                            <th data-priority="3">Отчество</th>
+                                            <th data-priority="3">Логин</th>
+                                            <th data-priority="3">Пароль</th>
+                                            <th data-priority="3">Роль</th>
+                                            <th data-priority="3">Почта логин</th>
+                                            <th data-priority="3">Почта пароль</th>
+                                            <th data-priority="3">Редактировать</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                            {% for user in all_user%}
+                                                <tr>
+                                                    <form action="" method="post">
+                                                        <th>
+                                                            {{user.id}}
+                                                            <input class="form-control" type="hidden" name="id" value="{{user.id}}">
+                                                        </th>
+                                                        <th>{{user.surname}}</th>
+                                                        <th>{{user.name}}</th>
+                                                        <th>{{user.otchestvo}}</th>
+                                                        <th>{{user.username}}</th>
+                                                        <th>{{user.password_hash}}</th>
+                                                        <th>{{user.role.name}}</th>
+                                                        <th>{{user.email_address}}</th>
+                                                        <th>{{user.email_password}}</th>
+                                                        <th>
+                                                            <div class="btn-group mt-4 mt-md-0" role="group">
+                                                                <button type="submit" class="btn btn-secondary" name="type_action" value="edit">
+                                                                    <i class="dripicons-document-edit"></i>
+                                                                </button>
+                                                                <button type="submit" class="btn btn-secondary" name="type_action" value="delete">
+                                                                    <i class="dripicons-trash"></i>
+                                                                </button>
+                                                            </div>
+                                                        </th>
+                                                    </form>
+                                                </tr>
+                                            {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div> <!-- end col -->
+        </div> <!-- end row -->
+
+    </div> <!-- container-fluid -->
+</div>
+<!-- End Page-content -->
+{% endblock %}

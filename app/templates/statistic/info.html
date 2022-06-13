@@ -1,0 +1,307 @@
+{% extends "base_page.html" %}
+
+{% block head %}
+    <title>Информация</title>
+{% endblock %}
+
+{% block body %}
+    <div class="page-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                        <h4 class="mb-sm-0 font-size-18">Информация</h4>
+                    </div>
+                </div>
+            </div>
+
+            <form action="" method="post" id="set_filters">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTwo">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            <h4 class="card-title text-primary">Настройки</h4>
+                      </button>
+                    </h2>
+
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                      <div class="accordion-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="mb-4">
+                                                <h4 class="card-title text-primary">Дата</h4>
+                                                <div class="input-daterange input-group" id="datepicker6" data-date-format="dd M, yyyy" data-date-autoclose="true" data-provide="datepicker" data-date-container="#datepicker6">
+                                                    <input type="text" class="form-control" name="date_start" placeholder="Начало" autocomplete="off">
+                                                    <input type="text" class="form-control" name="date_end" placeholder="Конец" autocomplete="off">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row" id="oformitel_row">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h4 class="card-title text-primary">Оформитель</h4>
+                                                <div class="mb-3 row">
+                                                    <label class="col-md-2 col-form-label fw-bold" for="oformitel">Логин</label>
+                                                    <div class="col-md-10">
+                                                        <input class="form-select" name="oformitel" id="oformitel" list="datalistOptionsOformitel" autocomplete="off">
+                                                        <datalist id="datalistOptionsOformitel">
+                                                            {% for oformitel in all_doc_users%}
+                                                                <option>{{oformitel.username}}</option>
+                                                            {% endfor %}
+                                                        </datalist>
+                                                    </div>
+                                                </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h4 class="card-title text-primary">Страховые компании прыгалки</h4>
+                                            <div class="row">
+                                                <div class="col-xl-3 col-sm-6">
+                                                    {% for comp in strah_comps[:10] %}
+                                                        <div class="form-check form-checkbox-outline form-check-primary mb-3">
+                                                            <input class="form-check-input" type="checkbox" id="strah_{{comp}}" name="{{comp}}">
+                                                            <label class="form-check-label" for="strah_{{comp}}"> {{comp}} </label>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+
+                                                <div class="col-xl-3 col-sm-6">
+                                                    {% for comp in strah_comps[10:20] %}
+                                                        <div class="form-check form-checkbox-outline form-check-primary mb-3">
+                                                            <input class="form-check-input" type="checkbox" id="strah_{{comp}}" name="{{comp}}">
+                                                            <label class="form-check-label" for="strah_{{comp}}"> {{comp}} </label>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+
+                                                <div class="col-xl-3 col-sm-6">
+                                                    {% for comp in strah_comps[20:30] %}
+                                                        <div class="form-check form-checkbox-outline form-check-primary mb-3">
+                                                            <input class="form-check-input" type="checkbox" id="strah_{{comp}}" name="{{comp}}">
+                                                            <label class="form-check-label" for="strah_{{comp}}"> {{comp}} </label>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+
+                                                <div class="col-xl-3 col-sm-6">
+                                                    {% for comp in strah_comps[30:] %}
+                                                        <div class="form-check form-checkbox-outline form-check-primary mb-3">
+                                                            <input class="form-check-input" type="checkbox" id="strah_{{comp}}" name="{{comp}}">
+                                                            <label class="form-check-label" for="strah_{{comp}}"> {{comp}} </label>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="mb-4">
+                                                <h4 class="card-title text-primary">Страховой кабинет</h4>
+                                                <div class="mb-3 row">
+                                                    <label for="CK_name" class="col-md-2 col-form-label fw-bold">Название страхового кабинета</label>
+                                                    <div class="col-md-10">
+                                                        <select class="form-select" id="CK_name" name="CK_name">
+                                                            <option value=""></option>
+                                                            <option value="osago_osk">ОСК</option>
+                                                            <option value="osago_ugsk">ЮГОРИЯ</option>
+                                                            <option value="osago_21">21 Век</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                      </div>
+                    </div>
+                </div>
+
+                <br>
+                <div class="row justify-content-end">
+                     <div class="col-1">
+                        <form action="" method="post" id="multiply_osago"></form>
+                        <input class="form-control" type="hidden" name="type_osago" value="none" form="multiply_osago">
+                        <button title="Применить фильтры" type="submit" class="btn btn-secondary w-sm" name="type_action" value="set_filters">
+                            <i class="fas fa-filter"></i>
+                        </button>
+                     </div>
+                </div>
+                <br>
+            </form>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <h4 class="card-title">
+                                    {% if selected_oformitel is defined or selected_date is defined or selected_CK is defined or selected_strah_comp is defined %}
+                                        Выбранные фильтры:
+                                    {% endif %}
+                                    {% if selected_oformitel is defined %}<mark>Оформитель</mark>: {{ selected_oformitel }}{% endif %}
+                                    {% if selected_date is defined %}<mark>Дата</mark>: {{ selected_date }}{% endif %}
+                                    {% if selected_CK is defined %}<mark>СК</mark>: {{ selected_CK }}{% endif %}
+                                    {% if selected_strah_comp is defined %}<mark>Страховые компании прыгалки</mark>: {{ selected_strah_comp }}{% endif %}
+                                </h4>
+                                <h4 class="card-title text-primary">Итоговая информация</h4>
+
+                                <div class="row">
+
+                                    <div class="col-xl-6">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h4 class="card-title text-center">Всего успешных заявок</h4>
+                                                <h3 class="card-title-desc text-center">{{ all_osago|length }}шт.</h3>
+                                            </div>
+                                        </div>
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div id="chart"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-6">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h4 class="card-title text-center">Заявки выбранного оформителя {% if selected_oformitel is defined %}({{ selected_oformitel }}){% endif %}</h4>
+                                                <div class="table-rep-plugin">
+                                                    <div class="table-responsive mb-0" data-pattern="priority-columns" style="height: 600px;overflow: scroll;">
+                                                        <table id="tech-companies-1" class="table table-striped">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th data-priority="3">#</th>
+                                                                        <th>Кабинет</th>
+                                                                        <th data-priority="1">Ответственный</th>
+                                                                        <th data-priority="3">Номер сделки</th>
+                                                                        <th data-priority="1">Страхователь</th>
+                                                                        <th data-priority="6">Страховая компания</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+
+                                                                    {% for osago in all_osago%}
+                                                                        <tr>
+                                                                            <form action="" method="post" id="edit_form_{{ osago.id }}">
+                                                                                <th>
+                                                                                    {{osago.id}}
+                                                                                    <input class="form-control" type="hidden" name="id" value="{{osago.id}}">
+                                                                                </th>
+                                                                                <th>
+                                                                                    {% if osago.type_osago == "osago_ugsk" %}
+                                                                                        Югория
+                                                                                    {% elif osago.type_osago == "osago_osk" %}
+                                                                                        ОСК
+                                                                                    {% elif osago.type_osago == "osago_21" %}
+                                                                                        21 Век
+                                                                                    {% endif %}
+                                                                                    <input class="form-control" type="hidden" name="type_osago" value="{{osago.type_osago}}" >
+                                                                                </th>
+                                                                                <th>
+                                                                                    {{osago.user_name}}
+                                                                                </th>
+                                                                                <th>{{osago.trans_num}}</th>
+                                                                                <th>{{osago.surname}} {{osago.name}} {{osago.otchestvo}}</th>
+                                                                                <th>{{osago.strah_comp}}</th>
+                                                                            </form>
+
+                                                                        </tr>
+                                                                    {% endfor %}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block js_page %}
+    <script src="/static/libs/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
+
+    <script src="/static/libs/apexcharts/apexcharts.min.js"></script>
+
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        Vue.createApp({
+          data() {
+            return {
+
+            };
+          }
+        }).mount('#oformitel_row')
+    </script>
+
+    <script>
+        let all_users = []
+        let user_osago = {}
+        {% for user in all_users %}
+            all_users.push("{{ user.username }}")
+            user_osago["{{ user.username }}"] = 0
+        {% endfor %}
+        console.log(all_users)
+        console.log(user_osago)
+
+
+        {% for osago in all_osago %}
+            user_osago["{{osago.user_name}}"] += 1
+        {% endfor %}
+        console.log(user_osago)
+
+        var options = {
+          series: Object.keys(user_osago).map(key => user_osago[key]),
+          chart: {
+          width: 380,
+          type: 'pie',
+        },
+        labels: all_users,
+        responsive: [{
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 200
+            },
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }]
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chart"), options);
+        chart.render();
+    </script>
+{% endblock %}

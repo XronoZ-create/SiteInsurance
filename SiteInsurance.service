@@ -1,0 +1,11 @@
+[Unit]
+Description=SiteInsurance
+After=network.target
+
+[Service]
+WorkingDirectory=/root/SiteInsurance/
+ExecStart=/usr/local/bin/gunicorn -k gevent -w 1 --bind 0.0.0.0:5000 --chdir /root/SiteInsurance run:app
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,1166 @@
+{% extends "base_page.html" %}
+
+{% block head %}
+    <title>Альфастрахование добавление</title>
+    <style>
+        .ui-autocomplete {
+            position: absolute;
+            z-index: 1000;
+            cursor: default;
+            padding: 0;
+            margin-top: 2px;
+            list-style: none;
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            -webkit-border-radius: 5px;
+               -moz-border-radius: 5px;
+                    border-radius: 5px;
+            -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+               -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+                    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+        .ui-autocomplete > li {
+          padding: 3px 20px;
+        }
+        .ui-autocomplete > li.ui-state-focus {
+          background-color: #DDD;
+        }
+        .ui-helper-hidden-accessible {
+          display: none;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="page-content">
+        <div class="container-fluid">
+            <form action="" method="post" class="custom-validation" novalidate>
+                <div class="row" id="oformitel_row">
+                    <div class="col-12" v-if=" '{{ current_user.role_id }}' == '1' || '{{ current_user.role_id }}' == '3' ">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title text-primary">Оформитель</h4>
+                                    <div class="mb-3 row">
+                                        <label class="col-md-2 col-form-label fw-bold" for="email_login">Логин</label>
+                                        <div class="col-md-10">
+                                            <input class="form-select" name="oformitel" id="oformitel" list="datalistOptionsOformitel" autocomplete="off">
+                                            <datalist id="datalistOptionsOformitel">
+                                                {% for oformitel in all_users%}
+                                                    <option>{{oformitel.username}}</option>
+                                                {% endfor %}
+                                            </datalist>
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" id="strah_row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title text-primary">Страхователь</h4>
+
+                                <div class="mb-3 row">
+                                    <label for="surname" class="col-md-2 col-form-label fw-bold">Фамилия</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="surname" name="surname" required>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="name" class="col-md-2 col-form-label fw-bold">Имя</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="name" name="name" required>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="otchestvo" class="col-md-2 col-form-label fw-bold">Отчество</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="otchestvo" name="otchestvo">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="birthday" class="col-md-2 col-form-label fw-bold">Дата рождения</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="date" id="birthday" name="birthday" required>
+                                    </div>
+                                </div>
+
+                                <h4 class="card-title text-primary">Паспорт</h4>
+                                <div class="mb-3 row">
+                                    <label for="pass_seriya" class="col-md-2 col-form-label fw-bold">Серия</label>
+                                    <div class="col-md-10">
+                                        <input id="pass_seriya" class="form-control input-mask" data-inputmask="'mask': '9', 'repeat': 4, 'greedy' : false" name="pass_seriya" required>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="pass_number" class="col-md-2 col-form-label fw-bold">Номер</label>
+                                    <div class="col-md-10">
+                                        <input id="pass_number" class="form-control input-mask" data-inputmask="'mask': '9', 'repeat': 6, 'greedy' : false" name="pass_number" required>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="pass_vidach" class="col-md-2 col-form-label fw-bold">Дата выдачи</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="date" id="pass_vidach" name="pass_vidach" required>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="pass_address" class="col-md-2 col-form-label fw-bold">Адрес прописки</label>
+                                    <div class="col-md-10">
+                                        <input class="form-select autocomplete" name="pass_address" id="pass_address" list="datalistOptionsAddressStrah" v-model="selected_address_strah" @input="select_address_strah" autocomplete="off" required>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" id="v-sobstv">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title text-primary">Собственник</h4>
+
+                                <div class="mb-3 row">
+                                    <label class="col-md-2 col-form-label fw-bold">Собственник является страхователем</label>
+                                    <div class="col-md-10">
+                                        <div class="square-switch">
+                                            <input type="checkbox" id="sobstv_yavl_strah" switch="none" checked="" name="sobstv_yavl_strah" v-model="checked" @change="set_sobstv_strah">
+                                            <label for="sobstv_yavl_strah" data-on-label="Да" data-off-label="Нет"></label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div v-show="!checked">
+                                    <div class="mb-3 row">
+                                        <label for="sobstv_surname" class="col-md-2 col-form-label fw-bold">Фамилия</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="sobstv_surname" name="sobstv_surname" :required="checked ? false : true">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="sobstv_name" class="col-md-2 col-form-label fw-bold">Имя</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="sobstv_name" name="sobstv_name" :required="checked ? false : true">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="sobstv_otchestvo" class="col-md-2 col-form-label fw-bold">Отчество</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="sobstv_otchestvo" name="sobstv_otchestvo">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="sobstv_birthday" class="col-md-2 col-form-label fw-bold">Дата рождения</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="sobstv_birthday" name="sobstv_birthday" :required="checked ? false : true">
+                                        </div>
+                                    </div>
+
+                                    <h4 class="card-title text-primary">Паспорт</h4>
+                                    <div class="mb-3 row">
+                                        <label for="sobstv_pass_seriya" class="col-md-2 col-form-label fw-bold">Серия</label>
+                                        <div class="col-md-10">
+                                            <input id="sobstv_pass_seriya" class="form-control input-mask" data-inputmask="'mask': '9', 'repeat': 4, 'greedy' : false" name="sobstv_pass_seriya" :required="checked ? false : true">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="sobstv_pass_number" class="col-md-2 col-form-label fw-bold">Номер</label>
+                                        <div class="col-md-10">
+                                            <input id="sobstv_pass_number" class="form-control input-mask" data-inputmask="'mask': '9', 'repeat': 6, 'greedy' : false" name="sobstv_pass_number" :required="checked ? false : true">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="sobstv_pass_vidach" class="col-md-2 col-form-label fw-bold">Дата выдачи</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="sobstv_pass_vidach" name="sobstv_pass_vidach" :required="checked ? false : true">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="sobstv_pass_address" class="col-md-2 col-form-label fw-bold">Адрес прописки</label>
+                                        <div class="col-md-10">
+                                            <input class="form-select autocomplete" name="sobstv_pass_address" id="sobstv_pass_address" list="datalistOptionsAddressSobstv" v-model="selected_address_sobstv" @input="select_address_sobstv" autocomplete="off" :required="checked ? false : true">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="auto">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title text-primary">Данные авто</h4>
+
+                                    <input id="auto_type" class="form-control input-mask" name="auto_type" v-model="auto_type" hidden>
+
+                                    <input id="modification_name" class="form-control input-mask" name="modification_name" v-model="modification_name" hidden>
+                                    <input id="modification" class="form-control input-mask" name="modification" v-model="modification" hidden>
+
+                                    <input id="brand" class="form-control input-mask" name="brand" v-model="brand" hidden>
+                                    <input id="brand_name" class="form-control input-mask" name="brand_name" v-model="brand_name" hidden>
+
+                                    <input id="model" class="form-control input-mask" name="model" v-model="model" hidden>
+                                    <input id="model_name" class="form-control input-mask" name="model_name" v-model="model_name" hidden>
+
+                                    <div class="mb-3 row">
+                                        <label for="target" class="col-md-2 col-form-label fw-bold">Цель</label>
+                                        <div class="col-md-10">
+                                            <select class="form-select" name="target" id="target">
+                                                <option>Личные</option>
+                                                <option>Дорожные и специальные ТС</option>
+                                                <option>Инкассация</option>
+                                                <option>Перевозка опасных и легко воспламеняющихся грузов</option>
+                                                <option>Прокат/Краткосрочная аренда</option>
+                                                <option>Прочие</option>
+                                                <option>Регулярные/по заказам пассажирские перевозки</option>
+                                                <option>Скорая помощь</option>
+                                                <option>Такси</option>
+                                                <option>Учебная езда</option>
+                                                <option>Экстренные и коммунальные службы</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label class="col-md-2 col-form-label fw-bold">Прицеп</label>
+                                        <div class="col-md-10">
+                                            <div class="square-switch">
+                                                <input type="checkbox" id="pricep" switch="none" checked="" name="pricep" v-model="pricep">
+                                                <label for="pricep" data-on-label="Да" data-off-label="Нет"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                       <label for="mark" class="col-md-2 col-form-label fw-bold">Марка</label>
+                                        <div class="col-md-10">
+                                            <input class="form-select" name="mark" id="mark" list="datalistOptionsMark" @change="load_model" v-model="selected_mark" autocomplete="off">
+                                            <datalist id="datalistOptionsMark">
+                                                {% for mark in marks %}
+                                                    <option>{{mark}}</option>
+                                                {% endfor %}
+                                            </datalist>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row" v-show="selected_mark.search('ДРУГОЕ ТС') == -1">
+                                       <label for="model" class="col-md-2 col-form-label fw-bold">Модель</label>
+                                        <div class="col-md-10">
+                                            <input class="form-select" name="model" id="model" list="datalistOptionsModel" v-model="selected_model" @change="select_model" autocomplete="off">
+
+                                            <datalist id="datalistOptionsModel">
+                                                <option v-for="(data_model, model) in json_model.data">
+                                                    {% raw %}
+                                                        {{ model }}
+                                                    {% endraw %}
+                                                </option>
+                                            </datalist>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="year" class="col-md-2 col-form-label fw-bold">Год выпуска</label>
+                                        <div class="col-md-10">
+                                            <input id="year" class="form-control input-mask" name="year" v-model="auto_year" @change="load_modification">
+                                        </div>
+                                    </div>
+
+                                    <div v-show="selected_mark.search('ДРУГОЕ ТС')!= -1">
+                                        <div class="mb-3 row">
+                                            <label for="brand_name_other" class="col-md-2 col-form-label fw-bold">Марка по ПТС</label>
+                                            <div class="col-md-10">
+                                                <input class="form-control" type="text" id="brand_name_other" name="brand_name_other">
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3 row">
+                                            <label for="model_name_other" class="col-md-2 col-form-label fw-bold">Модель по ПТС</label>
+                                            <div class="col-md-10">
+                                                <input class="form-control" type="text" id="model_name_other" name="model_name_other">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div v-show="selected_mark.search('ДРУГОЕ ТС')!= -1">
+                                        <div class="mb-3 row">
+                                            <label for="powers" class="col-md-2 col-form-label fw-bold">Мощность л/c</label>
+                                            <div class="col-md-10">
+                                                <input class="form-control" type="text" id="powers" name="powers" v-model="powers" :required="selected_modification == '' ? true : false">
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3 row">
+                                            <label for="category" class="col-md-2 col-form-label fw-bold">Категория ТС</label>
+                                            <div class="col-md-10">
+                                                <select class="form-select" name="category" id="category" v-model="category" @change="select_category" required>
+                                                    <option>A - мотоциклы</option>
+                                                    <option>B - легковые</option>
+                                                    <option>C - грузовые</option>
+                                                    <option>D - автобусы</option>
+                                                    <option>E - тракторы</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div v-show="selected_mark.search('ДРУГОЕ ТС') == -1">
+                                        <div class="mb-3 row">
+                                            <label for="modification" class="col-md-2 col-form-label fw-bold">Модификация</label>
+                                            <div class="col-md-10">
+                                                <input class="form-select" id="modification" list="datalistOptionsModification" @change="select_modification" v-model="selected_modification" autocomplete="off">
+                                                <datalist id="datalistOptionsModification">
+                                                    <option v-for="(mod) in json_mod.data">
+                                                        {% raw %}
+                                                            {{mod.modification_name}}
+                                                        {% endraw %}
+                                                    </option>
+                                                </datalist>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" v-show="category=='C - грузовые' ">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title text-primary">Данные для категории "C"</h4>
+
+                                    <div class="mb-3 row">
+                                        <label for="max_mass" class="col-md-2 col-form-label fw-bold">Максимальная масса</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="max_mass" name="max_mass">
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" v-show="category=='D - автобусы' ">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title text-primary">Данные для категории "D"</h4>
+
+                                    <div class="mb-3 row">
+                                        <label for="count_pass_mest" class="col-md-2 col-form-label fw-bold">Колличество пассажирских мест</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="count_pass_mest" name="count_pass_mest">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title text-primary">Тип документа</h4>
+
+                                <div class="mb-3 row">
+                                    <label for="type_document" class="col-md-2 col-form-label fw-bold">Документ</label>
+                                    <div class="col-md-10">
+                                        <select class="form-select" name="type_document" id="type_document">
+                                            <option>ПТС</option>
+                                            <option>СТС</option>
+                                            <option>ЭПТС</option>
+                                            <option>ПСМ</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title text-primary">СТС-ПТС</h4>
+
+                                <div class="mb-3 row">
+                                    <label for="ctc_ptc_seriya" class="col-md-2 col-form-label fw-bold">Серия</label>
+                                    <div class="col-md-10">
+                                        <input id="ctc_ptc_seriya" class="form-control" type="text" name="ctc_ptc_seriya">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="ctc_ptc_number" class="col-md-2 col-form-label fw-bold">Номер</label>
+                                    <div class="col-md-10">
+                                        <input id="ctc_ptc_number" class="form-control" type="text" name="ctc_ptc_number">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="ctc_ptc_vidach" class="col-md-2 col-form-label fw-bold">Дата выдачи</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="date" id="ctc_ptc_vidach" name="ctc_ptc_vidach">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="ctc_ptc_reg_znak" class="col-md-2 col-form-label fw-bold">Рег. знак (без региона)</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="ctc_ptc_reg_znak" name="ctc_ptc_reg_znak">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="auto_region" class="col-md-2 col-form-label fw-bold">Регион авто</label>
+                                    <div class="col-md-10">
+                                        <input id="auto_region" class="form-control input-mask" name="auto_region">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="ctc_ptc_vin" class="col-md-2 col-form-label fw-bold">VIN</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="ctc_ptc_vin" name="ctc_ptc_vin">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="ctc_ptc_nomer_shassi" class="col-md-2 col-form-label fw-bold">Номер шасси</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="ctc_ptc_nomer_shassi" name="ctc_ptc_nomer_shassi">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="ctc_ptc_nomer_cusov" class="col-md-2 col-form-label fw-bold">Номер кузова</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="ctc_ptc_nomer_cusov" name="ctc_ptc_nomer_cusov">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="voditeli">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title text-primary">Водители</h4>
+
+                                    <div class="mb-3 row">
+                                        <label class="col-md-2 col-form-label fw-bold">С ограничением</label>
+                                        <div class="col-md-10">
+                                            <div class="square-switch">
+                                                <input type="checkbox" id="c_ogr_or_not" switch="none" checked="" name="c_ogr_or_not" v-model="checked">
+                                                <label for="c_ogr_or_not" data-on-label="Да" data-off-label="Нет"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row" v-show="checked">
+                                        <label for="count_vod" class="col-md-2 col-form-label fw-bold">Колличество водителей</label>
+                                        <div class="col-md-10">
+                                            <select class="form-select" id="count_vod" v-model="selected">
+                                                <option>0</option>
+                                                <option>1</option>
+                                                <option>2</option>
+                                                <option>3</option>
+                                                <option>4</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" v-show="selected!=0">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title text-primary">Водитель-1</h4>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_1_surname" class="col-md-2 col-form-label fw-bold">Фамилия</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_1_surname" name="vod_1_surname" :required="checked && selected>0 ? true : false">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_1_name" class="col-md-2 col-form-label fw-bold">Имя</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_1_name" name="vod_1_name" :required="checked && selected>0 ? true : false">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_1_otchestvo" class="col-md-2 col-form-label fw-bold">Отчество</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_1_otchestvo" name="vod_1_otchestvo">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_1_birthday" class="col-md-2 col-form-label fw-bold">Дата рождения</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_1_birthday" name="vod_1_birthday" :required="checked && selected>0 ? true : false">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <div class="col-md-10">
+                                            <div>
+                                                <div class="d-flex flex-wrap gap-2">
+                                                    <button type="button" class="btn btn-success waves-effect waves-light" @click="copy_strah">Вставить данные страхователя</button>
+                                                    <button type="button" class="btn btn-success waves-effect waves-light" @click="copy_sobstv">Вставить данные собственника</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <h4 class="card-title text-primary">Водительское удостоверение</h4>
+                                    <div class="mb-3 row">
+                                        <label class="col-md-2 col-form-label fw-bold">Иностранные права</label>
+                                        <div class="col-md-10">
+                                            <div class="square-switch">
+                                                <input type="checkbox" id="vod_1_foreign_dl" switch="none" checked="" name="vod_1_foreigndl" v-model="vod_1_foreign_dl">
+                                                <label for="vod_1_foreign_dl" data-on-label="Да" data-off-label="Нет"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 row">
+                                        <label for="vod_1_seriya_vu" class="col-md-2 col-form-label fw-bold">Серия</label>
+                                        <div class="col-md-10">
+                                            <input id="vod_1_seriya_vu" class="form-control" type="text" name="vod_1_seriya_vu" :required="checked && selected>0 ? true : false">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_1_nomer_vu" class="col-md-2 col-form-label fw-bold">Номер</label>
+                                        <div class="col-md-10">
+                                            <input id="vod_1_nomer_vu" class="form-control" type="text" name="vod_1_nomer_vu" :required="checked && selected>0 ? true : false">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_1_data_vidachi_vu" class="col-md-2 col-form-label fw-bold">Дата выдачи</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_1_data_vidachi_vu" name="vod_1_data_vidachi_vu" :required="checked && selected>0 ? true : false">
+                                        </div>
+                                    </div>
+
+                                    <br>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_1_nachalo_staga" class="col-md-2 col-form-label fw-bold">Начало стажа</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_1_nachalo_staga" name="vod_1_nachalo_staga" :required="checked && selected>0 ? true : false">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" v-show="selected==2 || selected==3 || selected==4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title text-primary">Водитель-2</h4>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_2_surname" class="col-md-2 col-form-label fw-bold">Фамилия</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_2_surname" name="vod_2_surname" :required="checked && selected>1 ? true : false">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_2_name" class="col-md-2 col-form-label fw-bold">Имя</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_2_name" name="vod_2_name" :required="checked && selected>1 ? true : false">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_2_otchestvo" class="col-md-2 col-form-label fw-bold">Отчество</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_2_otchestvo" name="vod_2_otchestvo">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_2_birthday" class="col-md-2 col-form-label fw-bold">Дата рождения</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_2_birthday" name="vod_2_birthday" :required="checked && selected>1 ? true : false">
+                                        </div>
+                                    </div>
+
+                                    <h4 class="card-title text-primary">Водительское удостоверение</h4>
+                                    <div class="mb-3 row">
+                                        <label class="col-md-2 col-form-label fw-bold">Иностранные права</label>
+                                        <div class="col-md-10">
+                                            <div class="square-switch">
+                                                <input type="checkbox" id="vod_2_foreign_dl" switch="none" checked="" name="vod_2_foreigndl" v-model="vod_2_foreign_dl">
+                                                <label for="vod_2_foreign_dl" data-on-label="Да" data-off-label="Нет"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 row">
+                                        <label for="vod_2_seriya_vu" class="col-md-2 col-form-label fw-bold">Серия</label>
+                                        <div class="col-md-10">
+                                            <input id="vod_2_seriya_vu" class="form-control" type="text" name="vod_2_seriya_vu" :required="checked && selected>1 ? true : false">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_2_nomer_vu" class="col-md-2 col-form-label fw-bold">Номер</label>
+                                        <div class="col-md-10">
+                                            <input id="vod_2_nomer_vu" class="form-control" type="text" name="vod_2_nomer_vu" :required="checked && selected>1 ? true : false">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_2_data_vidachi_vu" class="col-md-2 col-form-label fw-bold">Дата выдачи</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_2_data_vidachi_vu" name="vod_2_data_vidachi_vu" :required="checked && selected>1 ? true : false">
+                                        </div>
+                                    </div>
+
+                                    <br>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_2_nachalo_staga" class="col-md-2 col-form-label fw-bold">Начало стажа</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_2_nachalo_staga" name="vod_2_nachalo_staga" :required="checked && selected>1 ? true : false">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" v-show="selected==3 || selected==4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title text-primary">Водитель-3</h4>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_3_surname" class="col-md-2 col-form-label fw-bold">Фамилия</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_3_surname" name="vod_3_surname" :required="checked && selected>2 ? true : false">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_3_name" class="col-md-2 col-form-label fw-bold">Имя</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_3_name" name="vod_3_name" :required="checked && selected>2 ? true : false">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_3_otchestvo" class="col-md-2 col-form-label fw-bold">Отчество</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_3_otchestvo" name="vod_3_otchestvo">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_3_birthday" class="col-md-2 col-form-label fw-bold">Дата рождения</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_3_birthday" name="vod_3_birthday" :required="checked && selected>2 ? true : false">
+                                        </div>
+                                    </div>
+
+                                    <h4 class="card-title text-primary">Водительское удостоверение</h4>
+                                    <div class="mb-3 row">
+                                        <label class="col-md-2 col-form-label fw-bold">Иностранные права</label>
+                                        <div class="col-md-10">
+                                            <div class="square-switch">
+                                                <input type="checkbox" id="vod_3_foreign_dl" switch="none" checked="" name="vod_3_foreigndl" v-model="vod_3_foreign_dl">
+                                                <label for="vod_3_foreign_dl" data-on-label="Да" data-off-label="Нет"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 row">
+                                        <label for="vod_3_seriya_vu" class="col-md-2 col-form-label fw-bold">Серия</label>
+                                        <div class="col-md-10">
+                                            <input id="vod_3_seriya_vu" class="form-control" type="text" name="vod_3_seriya_vu" :required="checked && selected>2 ? true : false">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_3_nomer_vu" class="col-md-2 col-form-label fw-bold">Номер</label>
+                                        <div class="col-md-10">
+                                            <input id="vod_3_nomer_vu" class="form-control" type="text" name="vod_3_nomer_vu" :required="checked && selected>2 ? true : false">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_3_data_vidachi_vu" class="col-md-2 col-form-label fw-bold">Дата выдачи</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_3_data_vidachi_vu" name="vod_3_data_vidachi_vu" :required="checked && selected>2 ? true : false">
+                                        </div>
+                                    </div>
+
+                                    <br>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_3_nachalo_staga" class="col-md-2 col-form-label fw-bold">Начало стажа</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_3_nachalo_staga" name="vod_3_nachalo_staga" :required="checked && selected>2 ? true : false">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" v-show="selected==4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title text-primary">Водитель-4</h4>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_4_surname" class="col-md-2 col-form-label fw-bold">Фамилия</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_4_surname" name="vod_4_surname" :required="checked && selected>3 ? true : false">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_4_name" class="col-md-2 col-form-label fw-bold">Имя</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_4_name" name="vod_4_name" :required="checked && selected>3 ? true : false">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_4_otchestvo" class="col-md-2 col-form-label fw-bold">Отчество</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_4_otchestvo" name="vod_4_otchestvo">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_4_birthday" class="col-md-2 col-form-label fw-bold">Дата рождения</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_4_birthday" name="vod_4_birthday" :required="checked && selected>3 ? true : false">
+                                        </div>
+                                    </div>
+
+                                    <h4 class="card-title text-primary">Водительское удостоверение</h4>
+                                    <div class="mb-3 row">
+                                        <label class="col-md-2 col-form-label fw-bold">Иностранные права</label>
+                                        <div class="col-md-10">
+                                            <div class="square-switch">
+                                                <input type="checkbox" id="vod_4_foreign_dl" switch="none" checked="" name="vod_4_foreigndl" v-model="vod_4_foreign_dl">
+                                                <label for="vod_4_foreign_dl" data-on-label="Да" data-off-label="Нет"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 row">
+                                        <label for="vod_4_seriya_vu" class="col-md-2 col-form-label fw-bold">Серия</label>
+                                        <div class="col-md-10">
+                                            <input id="vod_4_seriya_vu" class="form-control" type="text" name="vod_4_seriya_vu" :required="checked && selected>3 ? true : false">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_4_nomer_vu" class="col-md-2 col-form-label fw-bold">Номер</label>
+                                        <div class="col-md-10">
+                                            <input id="vod_4_nomer_vu" class="form-control" type="text" name="vod_4_nomer_vu" :required="checked && selected>3 ? true : false">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_4_data_vidachi_vu" class="col-md-2 col-form-label fw-bold">Дата выдачи</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_4_data_vidachi_vu" name="vod_4_data_vidachi_vu" :required="checked && selected>3 ? true : false">
+                                        </div>
+                                    </div>
+
+                                    <br>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_4_nachalo_staga" class="col-md-2 col-form-label fw-bold">Начало стажа</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_4_nachalo_staga" name="vod_4_nachalo_staga" :required="checked && selected>3 ? true : false">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title text-primary">Сроки</h4>
+
+                                <div class="mb-3 row">
+                                    <label for="OSAGO_start" class="col-md-2 col-form-label fw-bold">Дата начала ОСАГО</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="date" id="OSAGO_start" name="OSAGO_start" required>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="OSAGO_count_mouth" class="col-md-2 col-form-label fw-bold">Колличество месяцев</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="OSAGO_count_mouth" name="OSAGO_count_mouth" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title text-primary">Страховые компании</h4>
+                                <div class="row">
+                                    <div class="col-xl-3 col-sm-6">
+                                        {% for comp in strah_comps[:10] %}
+                                            <div class="form-check form-checkbox-outline form-check-primary mb-3">
+                                                <input class="form-check-input" type="checkbox" id="strah_{{comp}}" name="{{comp}}">
+                                                <label class="form-check-label" for="strah_{{comp}}"> {{comp}} </label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="col-xl-3 col-sm-6">
+                                        {% for comp in strah_comps[10:20] %}
+                                            <div class="form-check form-checkbox-outline form-check-primary mb-3">
+                                                <input class="form-check-input" type="checkbox" id="strah_{{comp}}" name="{{comp}}">
+                                                <label class="form-check-label" for="strah_{{comp}}"> {{comp}} </label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="col-xl-3 col-sm-6">
+                                        {% for comp in strah_comps[20:30] %}
+                                            <div class="form-check form-checkbox-outline form-check-primary mb-3">
+                                                <input class="form-check-input" type="checkbox" id="strah_{{comp}}" name="{{comp}}">
+                                                <label class="form-check-label" for="strah_{{comp}}"> {{comp}} </label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="col-xl-3 col-sm-6">
+                                        {% for comp in strah_comps[30:] %}
+                                            <div class="form-check form-checkbox-outline form-check-primary mb-3">
+                                                <input class="form-check-input" type="checkbox" id="strah_{{comp}}" name="{{comp}}">
+                                                <label class="form-check-label" for="strah_{{comp}}"> {{comp}} </label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title text-primary">Другое</h4>
+
+                                <div class="mb-3 row">
+                                    <label for="trans_num" class="col-md-2 col-form-label fw-bold">Номер сделки</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="trans_num" name="trans_num">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="est_price_policy" class="col-md-2 col-form-label fw-bold">Заявленная стоимость полиса</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="est_price_policy" name="est_price_policy">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="num_group_wa" class="col-md-2 col-form-label fw-bold">Номер группы WA</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="num_group_wa" name="num_group_wa">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row me-auto">
+                    <button type="submit" class="btn btn-primary btn-lg waves-effect waves-light">Сохранить</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-select/3.13.2/vue-select.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-select/3.13.2/vue-select.min.js"></script>
+
+
+    <script>
+        Vue.createApp({
+          data() {
+            return {
+
+            };
+          }
+        }).mount('#oformitel_row')
+
+        Vue.createApp({
+          data() {
+            return {
+                selected_address_strah: "",
+                json_address_strah: {data:[]}
+            };
+          },
+          methods: {
+              select_address_strah() {
+                  this.selected_address_strah = this.selected_address_strah.replace('.', ' ')
+                  axios
+                      .post("{{url_for('api.dadata_address')}}", {"text_address": this.selected_address_strah})
+                      .then(response => (this.json_address_strah = response.data));
+
+                  var strah_address_list = this.json_address_strah.data;
+                  $("#pass_address").autocomplete({
+                      source: function (request, response) {
+                          var id_item = 1;
+                          var red_strah_address_list = strah_address_list.map(function(x) {
+                              return ({
+                                  id: id_item++,
+                                  name: x,
+                                  value: x
+                              });
+                            });
+                          response(red_strah_address_list);return;},
+                    }).focus(function() {
+                        $(this).autocomplete('search', "")
+                    })
+
+              },
+          }
+        }).mount('#strah_row')
+
+        Vue.createApp({
+          data() {
+            return {
+              checked: false,
+                selected_address_sobstv: "",
+                json_address_sobstv: {data:[]}
+            };
+          },
+            methods: {
+                select_address_sobstv() {
+                    this.selected_address_sobstv = this.selected_address_sobstv.replace('.', ' ')
+                    axios
+                        .post("{{url_for('api.dadata_address')}}", {"text_address": this.selected_address_sobstv})
+                        .then(response => (this.json_address_sobstv = response.data));
+
+                      var sobstv_address_list = this.json_address_sobstv.data;
+                      $("#sobstv_pass_address").autocomplete({
+                          source: function (request, response) {
+                              var id_item = 1;
+                              var red_sobstv_address_list = sobstv_address_list.map(function(x) {
+                                  return ({
+                                      id: id_item++,
+                                      name: x,
+                                      value: x
+                                  });
+                                });
+                              response(red_sobstv_address_list);return;},
+                        }).focus(function() {
+                            $(this).autocomplete('search', "")
+                        })
+                },
+                set_sobstv_strah() {
+                    if (this.checked) {
+                        document.getElementById("sobstv_surname").value = document.getElementById("name").value;
+                        document.getElementById("sobstv_name").value = document.getElementById("surname").value;
+                        document.getElementById("sobstv_otchestvo").value = document.getElementById("otchestvo").value;
+                        document.getElementById("sobstv_birthday").value = document.getElementById("birthday").value;
+
+                        document.getElementById("sobstv_pass_seriya").value = document.getElementById("pass_seriya").value;
+                        document.getElementById("sobstv_pass_number").value = document.getElementById("pass_number").value;
+                        document.getElementById("sobstv_pass_address").value = document.getElementById("pass_address").value;
+                        document.getElementById("sobstv_pass_vidach").value = document.getElementById("pass_vidach").value;
+                    }
+                    else {
+                        document.getElementById("sobstv_surname").value = "";
+                        document.getElementById("sobstv_name").value = "";
+                        document.getElementById("sobstv_otchestvo").value = "";
+                        document.getElementById("sobstv_birthday").value = "";
+
+                        document.getElementById("sobstv_pass_seriya").value = "";
+                        document.getElementById("sobstv_pass_number").value = "";
+                        document.getElementById("sobstv_pass_address").value = "";
+                        document.getElementById("sobstv_pass_vidach").value = "";
+                    }
+              },
+            }
+        }).mount('#v-sobstv')
+
+        Vue.createApp({
+          data() {
+            return {
+              checked: false,
+                selected: 0,
+                vod_1_foreign_dl: false,
+                vod_2_foreign_dl: false,
+                vod_3_foreign_dl: false,
+                vod_4_foreign_dl: false,
+                vod_1_tr: false,
+                vod_2_tr: false,
+                vod_3_tr: false,
+                vod_4_tr: false
+            }
+          },
+            methods: {
+              copy_strah() {
+                  document.getElementById("vod_1_name").value = document.getElementById("name").value;
+                  document.getElementById("vod_1_surname").value = document.getElementById("surname").value;
+                  document.getElementById("vod_1_otchestvo").value = document.getElementById("otchestvo").value;
+                  document.getElementById("vod_1_birthday").value = document.getElementById("birthday").value;
+              },
+                copy_sobstv() {
+                  document.getElementById("vod_1_name").value = document.getElementById("sobstv_name").value;
+                  document.getElementById("vod_1_surname").value = document.getElementById("sobstv_surname").value;
+                  document.getElementById("vod_1_otchestvo").value = document.getElementById("sobstv_otchestvo").value;
+                  document.getElementById("vod_1_birthday").value = document.getElementById("sobstv_birthday").value;
+              }
+            }
+        }).mount('#voditeli')
+
+        Vue.createApp({
+          data() {
+            return {
+                selected_mark: "",
+                json_model: {data:[]},
+                selected_model: "",
+                category: "",
+                json_mod: "",
+                auto_year: "",
+                set_conf_ruchn: "",
+                pricep: "",
+                powers: "",
+                selected_modification: "",
+                auto_type: "",
+
+                brand: "",
+                brand_name: "",
+                modification: "",
+                modification_name: "",
+                model: "",
+                model_name: ""
+            }
+          },
+            methods: {
+                load_model() {
+                  axios
+                      .post("{{url_for('alfa.load_models')}}", {"mark":this.selected_mark})
+                      .then(response => (this.json_model = response.data));
+
+                  if (this.selected_mark.search("ДРУГОЕ ТС") != -1) {
+                        this.set_conf_ruchn = true;
+                    }
+                    else {
+                        this.set_conf_ruchn = false;
+                    }
+                },
+                select_category(){
+                    if (this.category == "B - легковые"){
+                        this.auto_type = 'Легковой а/м';
+                    }
+                    else if (this.category == "A - мотоциклы"){
+                        this.auto_type = 'Мотоциклы и мотороллеры';
+                    }
+                    else if (this.category == "C - грузовые"){
+                        this.auto_type = 'Грузовой а/м';
+                    }
+                    else if (this.category == "D - автобусы"){
+                        this.auto_type = 'Автобусы';
+                    }
+                    else if (this.category == "E - тракторы"){
+                        this.auto_type = 'Трактора, самоходные и иные машины';
+                    }
+                },
+                select_model(){
+                    this.brand = this.json_model.data[this.selected_model]["brand"];
+                    this.brand_name = this.json_model.data[this.selected_model]["brand_name"];
+                    this.model = this.json_model.data[this.selected_model]["model"];
+                    this.model_name = this.json_model.data[this.selected_model]["model_name"];
+                },
+                load_modification(){
+                    axios
+                      .post("{{url_for('alfa.load_modification')}}", {"category": this.category, "brand":this.brand, "model": this.model, "year": this.auto_year})
+                      .then(response => (this.json_mod = response.data));
+                },
+                select_modification(){
+                    this.powers = this.json_mod.data[this.selected_modification]["powers"]
+                    this.modification_name = this.json_mod.data[this.selected_modification]["modification_name"];
+                    this.modification = this.json_mod.data[this.selected_modification]["modification"];
+                }
+              },
+
+
+        }).mount('#auto')
+
+    </script>
+
+{% endblock %}
+
+{% block js_page %}
+
+{% endblock %}

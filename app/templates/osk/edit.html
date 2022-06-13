@@ -1,0 +1,1029 @@
+{% extends "base_page.html" %}
+
+{% block head %}
+    <title>ОСК редактирование заявки #{{osago_osk.id}}</title>
+{% endblock %}
+
+
+
+{% block body %}
+    <div class="page-content">
+        <div class="container-fluid">
+            <form action="" method="post">
+                <input type="hidden" name="id" value="{{osago_osk.id}}">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title text-primary">Почта</h4>
+                                    <div class="mb-3 row">
+                                        <label class="col-md-2 col-form-label fw-bold" for="email_login">Логин</label>
+                                        <div class="col-md-10">
+                                            <input id="email_login" class="form-control" type="text" name="email_login" value="{{osago_osk.email_login}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="email_password" class="col-md-2 col-form-label fw-bold">Пароль</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="email_password" name="email_password" value="{{osago_osk.email_password}}">
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title text-primary">Страхователь</h4>
+
+                                <div class="mb-3 row">
+                                    <label for="surname" class="col-md-2 col-form-label fw-bold">Фамилия</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="surname" name="surname" value="{{osago_osk.surname}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="name" class="col-md-2 col-form-label fw-bold">Имя</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="name" name="name" value="{{osago_osk.name}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="otchestvo" class="col-md-2 col-form-label fw-bold">Отчество</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="otchestvo" name="otchestvo" value="{{osago_osk.otchestvo}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="birthday" class="col-md-2 col-form-label fw-bold">Дата рождения</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="date" id="birthday" name="birthday" value="{{osago_osk.birthday}}">
+                                    </div>
+                                </div>
+
+                                <h4 class="card-title text-primary">Паспорт</h4>
+                                <div class="mb-3 row">
+                                    <label for="pass_seriya" class="col-md-2 col-form-label fw-bold">Серия</label>
+                                    <div class="col-md-10">
+                                        <input id="pass_seriya" class="form-control input-mask" data-inputmask="'mask': '9', 'repeat': 4, 'greedy' : false" name="pass_seriya" value="{{osago_osk.pass_seriya}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="pass_number" class="col-md-2 col-form-label fw-bold">Номер</label>
+                                    <div class="col-md-10">
+                                        <input id="pass_number" class="form-control input-mask" data-inputmask="'mask': '9', 'repeat': 6, 'greedy' : false" name="pass_number" value="{{osago_osk.pass_number}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="pass_vidach" class="col-md-2 col-form-label fw-bold">Дата выдачи</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="date" id="pass_vidach" name="pass_vidach" value="{{osago_osk.pass_vidach}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="pass_address" class="col-md-2 col-form-label fw-bold">Адрес прописки</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="pass_address" name="pass_address" value="{{osago_osk.pass_address}}">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" id="v-sobstv">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title text-primary">Собственник</h4>
+
+                                <div class="mb-3 row">
+                                    <label class="col-md-2 col-form-label fw-bold">Собственник является страхователем</label>
+                                    <div class="col-md-10">
+                                        <div class="square-switch">
+                                            <input type="checkbox" id="sobstv_yavl_strah" switch="none" checked="" name="sobstv_yavl_strah" v-model="checked">
+                                            <label for="sobstv_yavl_strah" data-on-label="Да" data-off-label="Нет"></label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div v-show="!checked">
+                                    <div class="mb-3 row">
+                                        <label for="sobstv_surname" class="col-md-2 col-form-label fw-bold">Фамилия</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="sobstv_surname" name="sobstv_surname" value="{{osago_osk.sobstv_surname}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="sobstv_name" class="col-md-2 col-form-label fw-bold">Имя</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="sobstv_name" name="sobstv_name" value="{{osago_osk.sobstv_name}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="sobstv_otchestvo" class="col-md-2 col-form-label fw-bold">Отчество</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="sobstv_otchestvo" name="sobstv_otchestvo" value="{{osago_osk.sobstv_otchestvo}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="sobstv_birthday" class="col-md-2 col-form-label fw-bold">Дата рождения</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="sobstv_birthday" name="sobstv_birthday" value="{{osago_osk.sobstv_birthday}}">
+                                        </div>
+                                    </div>
+
+                                    <h4 class="card-title text-primary">Паспорт</h4>
+                                    <div class="mb-3 row">
+                                        <label for="sobstv_pass_seriya" class="col-md-2 col-form-label fw-bold">Серия</label>
+                                        <div class="col-md-10">
+                                            <input id="sobstv_pass_seriya" class="form-control input-mask" data-inputmask="'mask': '9', 'repeat': 4, 'greedy' : false" name="sobstv_pass_seriya" value="{{osago_osk.sobstv_pass_seriya}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="sobstv_pass_number" class="col-md-2 col-form-label fw-bold">Номер</label>
+                                        <div class="col-md-10">
+                                            <input id="sobstv_pass_number" class="form-control input-mask" data-inputmask="'mask': '9', 'repeat': 6, 'greedy' : false" name="sobstv_pass_number" value="{{osago_osk.sobstv_pass_number}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="sobstv_pass_vidach" class="col-md-2 col-form-label fw-bold">Дата выдачи</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="sobstv_pass_vidach" name="sobstv_pass_vidach" value="{{osago_osk.sobstv_pass_vidach}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="sobstv_pass_address" class="col-md-2 col-form-label fw-bold">Адрес прописки</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="sobstv_pass_address" name="sobstv_pass_address" value="{{osago_osk.sobstv_pass_address}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="auto">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title text-primary">Данные авто</h4>
+
+                                    <div class="mb-3 row">
+                                        <label for="target" class="col-md-2 col-form-label fw-bold">Цель</label>
+                                        <div class="col-md-10">
+                                            <select class="form-select" name="target" id="target">
+                                                <option v-if="'{{osago_osk.target}}' == 'Личная'" selected>Личная</option>
+                                                <option v-else>Личная</option>
+                                                <option v-if="'{{osago_osk.target}}' == 'Такси'" selected>Такси</option>
+                                                <option v-else>Такси</option>
+                                                <option v-if="'{{osago_osk.target}}' == 'Учебная езда'" selected>Учебная езда</option>
+                                                <option v-else>Учебная езда</option>
+                                                <option v-if="'{{osago_osk.target}}' == 'Регулярные пассажирские перевозки / перевозки пассажиров по заказам'" selected>Регулярные пассажирские перевозки / перевозки пассажиров по заказам</option>
+                                                <option v-else>Регулярные пассажирские перевозки / перевозки пассажиров по заказам</option>
+                                                <option v-if="'{{osago_osk.target}}' == 'Прочее'" selected>Прочее</option>
+                                                <option v-else>Прочее</option>
+                                                <option v-if="'{{osago_osk.target}}' == 'Перевозка опасных и легко воспламеняющихся грузов'" selected>Перевозка опасных и легко воспламеняющихся грузов</option>
+                                                <option v-else>Перевозка опасных и легко воспламеняющихся грузов</option>
+                                                <option v-if="'{{osago_osk.target}}' == 'Прокат / краткосрочная аренда'" selected>Прокат / краткосрочная аренда</option>
+                                                <option v-else>Прокат / краткосрочная аренда</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                       <label for="mark" class="col-md-2 col-form-label fw-bold">Марка</label>
+                                        <div class="col-md-10">
+                                            <input class="form-select" name="mark" id="mark" list="datalistOptionsMark" @change="load_model" v-model="selected_mark">
+                                            <datalist id="datalistOptionsMark">
+                                                {% for mark in marks%}
+                                                    <option>{{mark}}</option>
+                                                {% endfor %}
+                                            </datalist>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                       <label for="model" class="col-md-2 col-form-label fw-bold">Модель</label>
+                                        <div class="col-md-10">
+                                            <input class="form-select" name="model" id="model" list="datalistOptionsModel" v-model="selected_model" @change="select_model">
+                                            <datalist id="datalistOptionsModel">
+                                                <option v-for="(model) in json_model.data">
+                                                    {% raw %}
+                                                        {{model.text}}
+                                                    {% endraw %}
+                                                </option>
+                                            </datalist>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="year" class="col-md-2 col-form-label fw-bold">Год выпуска</label>
+                                        <div class="col-md-10">
+                                            <input id="year" class="form-control input-mask" name="year" v-model="auto_year" @change="load_modification">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label class="col-md-2 col-form-label fw-bold">Заполнить данные о авто вручную</label>
+                                        <div class="col-md-10">
+                                            <div class="square-switch">
+                                                <input type="checkbox" id="set_conf_ruchn" switch="none" checked="" v-model="set_conf_ruchn">
+                                                <label for="set_conf_ruchn" data-on-label="Да" data-off-label="Нет"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div v-show="selected_mark=='Другая марка'">
+                                        <div class="mb-3 row">
+                                            <label for="other_mark" class="col-md-2 col-form-label fw-bold">Марка и модель по ПТС</label>
+                                            <div class="col-md-10">
+                                                <input class="form-control" type="text" id="other_mark" name="other_mark" value="{{osago_osk.other_mark}}">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div v-show="set_conf_ruchn">
+                                        <div class="mb-3 row">
+                                            <label for="powers" class="col-md-2 col-form-label fw-bold">Мощность л/c</label>
+                                            <div class="col-md-10">
+                                                <input class="form-control" type="text" id="powers" name="powers" value="{{osago_osk.powers}}">
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3 row">
+                                            <label for="type_engine" class="col-md-2 col-form-label fw-bold">Тип двигателя</label>
+                                            <div class="col-md-10">
+                                                <select class="form-select" name="type_engine" id="type_engine">
+                                                    <option></option>
+                                                    <option v-if="'{{osago_osk.type_engine}}' == 'Бензин'" selected>Бензин</option>
+                                                    <option v-else>Бензин</option>
+                                                    <option v-if="'{{osago_osk.type_engine}}' == 'Дизель'" selected>Дизель</option>
+                                                    <option v-else>Дизель</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3 row">
+                                            <label for="type_cusov" class="col-md-2 col-form-label fw-bold">Тип кузова</label>
+                                            <div class="col-md-10">
+                                                <select class="form-select" name="type_cusov" id="type_cusov">
+                                                    <option></option>
+                                                    <option v-if="'{{osago_osk.type_cusov}}' == 'Хэтчбек'" selected>Хэтчбек</option>
+                                                    <option v-else>Хэтчбек</option>
+                                                    <option v-if="'{{osago_osk.type_cusov}}' == 'Универсал'" selected>Универсал</option>
+                                                    <option v-else>Универсал</option>
+                                                    <option v-if="'{{osago_osk.type_cusov}}' == 'Седан'" selected>Седан</option>
+                                                    <option v-else>Седан</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3 row">
+                                            <label for="transmission" class="col-md-2 col-form-label fw-bold">Коробка передач</label>
+                                            <div class="col-md-10">
+                                                <select class="form-select" name="transmission" id="transmission">
+                                                    <option></option>
+                                                    <option v-if="'{{osago_osk.transmission}}' == 'Механическая'" selected>Механическая</option>
+                                                    <option v-else>Механическая</option>
+                                                    <option v-if="'{{osago_osk.transmission}}' == 'Автоматическая'" selected>Автоматическая</option>
+                                                    <option v-else>Автоматическая</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div v-show="!set_conf_ruchn">
+                                        <div class="mb-3 row">
+                                            <label for="modification" class="col-md-2 col-form-label fw-bold">Модификация</label>
+                                            <div class="col-md-10">
+                                                <input class="form-select" name="modification" id="modification" list="datalistOptionsModification" v-model="selected_modification">
+                                                <datalist id="datalistOptionsModification">
+                                                    <option v-for="(mod) in json_mod">
+                                                        {% raw %}
+                                                            {{mod}}
+                                                        {% endraw %}
+                                                    </option>
+                                                </datalist>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" v-show="category=='C' ">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title text-primary">Данные для категории "C"</h4>
+
+                                    <div class="mb-3 row">
+                                        <label for="max_mass" class="col-md-2 col-form-label fw-bold">Максимальная масса</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="max_mass" name="max_mass" value="{{osago_osk.max_mass}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label class="col-md-2 col-form-label fw-bold">Прицеп</label>
+                                        <div class="col-md-10">
+                                            <div class="square-switch">
+                                                <input type="checkbox" id="pricep" switch="none" checked="" name="pricep" v-model="pricep">
+                                                <label for="pricep" data-on-label="Да" data-off-label="Нет"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" v-show="category=='D' ">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title text-primary">Данные для категории "D"</h4>
+
+                                    <div class="mb-3 row">
+                                        <label for="count_pass_mest" class="col-md-2 col-form-label fw-bold">Колличество пассажирских мест</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="count_pass_mest" name="count_pass_mest" value="{{osago_osk.count_pass_mest}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title text-primary">Тип документа</h4>
+
+                                <div class="mb-3 row" id="v-type-doc">
+                                    <label for="type_document" class="col-md-2 col-form-label fw-bold">Документ</label>
+                                    <div class="col-md-10">
+                                        <select class="form-select" name="type_document" id="type_document">
+                                            <option v-if="'{{osago_osk.type_document}}' == 'ПТС'" selected>ПТС</option>
+                                            <option v-else>ПТС</option>
+                                            <option v-if="'{{osago_osk.type_document}}' == 'СТС'" selected>СТС</option>
+                                            <option v-else>СТС</option>
+                                            <option v-if="'{{osago_osk.type_document}}' == 'ЭПТС'" selected>ЭПТС</option>
+                                            <option v-else>ЭПТС</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title text-primary">СТС-ПТС</h4>
+
+                                <div class="mb-3 row">
+                                    <label for="ctc_ptc_seriya" class="col-md-2 col-form-label fw-bold">Серия</label>
+                                    <div class="col-md-10">
+                                        <input id="ctc_ptc_seriya" class="form-control" type="text" name="ctc_ptc_seriya" value="{{osago_osk.ctc_ptc_seriya}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="ctc_ptc_number" class="col-md-2 col-form-label fw-bold">Номер</label>
+                                    <div class="col-md-10">
+                                        <input id="ctc_ptc_number" class="form-control input-mask" data-inputmask="'mask': '9', 'repeat': 6, 'greedy' : false" name="ctc_ptc_number" value="{{osago_osk.ctc_ptc_number}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="ctc_ptc_vidach" class="col-md-2 col-form-label fw-bold">Дата выдачи</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="date" id="ctc_ptc_vidach" name="ctc_ptc_vidach" value="{{osago_osk.ctc_ptc_vidach}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="ctc_ptc_reg_znak" class="col-md-2 col-form-label fw-bold">Рег. знак</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="ctc_ptc_reg_znak" name="ctc_ptc_reg_znak" value="{{osago_osk.ctc_ptc_reg_znak}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="ctc_ptc_vin" class="col-md-2 col-form-label fw-bold">VIN</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="ctc_ptc_vin" name="ctc_ptc_vin" value="{{osago_osk.ctc_ptc_vin}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="ctc_ptc_nomer_shassi" class="col-md-2 col-form-label fw-bold">Номер шасси</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="ctc_ptc_nomer_shassi" name="ctc_ptc_nomer_shassi" value="{{osago_osk.ctc_ptc_nomer_shassi}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="ctc_ptc_nomer_cusov" class="col-md-2 col-form-label fw-bold">Номер кузова</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="ctc_ptc_nomer_cusov" name="ctc_ptc_nomer_cusov" value="{{osago_osk.ctc_ptc_nomer_cusov}}">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title text-primary">Диагностическая карта</h4>
+
+                                <div class="mb-3 row">
+                                    <label for="nomer_dk" class="col-md-2 col-form-label fw-bold">Номер</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="nomer_dk" name="nomer_dk" value="{{osago_osk.nomer_dk}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="data_TO" class="col-md-2 col-form-label fw-bold">Дата</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="date" id="data_TO" name="data_TO" value="{{osago_osk.data_TO}}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div id="voditeli">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title text-primary">Водители</h4>
+
+                                    <div class="mb-3 row">
+                                        <label class="col-md-2 col-form-label fw-bold">С ограничением</label>
+                                        <div class="col-md-10">
+                                            <div class="square-switch">
+                                                <input type="checkbox" id="c_ogr_or_not" switch="none" checked="" name="c_ogr_or_not" v-model="checked">
+                                                <label for="c_ogr_or_not" data-on-label="Да" data-off-label="Нет"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row" v-show="checked">
+                                        <label for="count_vod" class="col-md-2 col-form-label fw-bold">Колличество водителей</label>
+                                        <div class="col-md-10">
+                                            <select class="form-select" id="count_vod" v-model="selected">
+                                                <option>0</option>
+                                                <option>1</option>
+                                                <option>2</option>
+                                                <option>3</option>
+                                                <option>4</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" v-show="selected!=0">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title text-primary">Водитель-1</h4>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_1_surname" class="col-md-2 col-form-label fw-bold">Фамилия</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_1_surname" name="vod_1_surname" value="{{osago_osk.voditeli[0].surname}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_1_name" class="col-md-2 col-form-label fw-bold">Имя</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_1_name" name="vod_1_name" value="{{osago_osk.voditeli[0].name}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_1_otchestvo" class="col-md-2 col-form-label fw-bold">Отчество</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_1_otchestvo" name="vod_1_otchestvo" value="{{osago_osk.voditeli[0].otchestvo}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_1_birthday" class="col-md-2 col-form-label fw-bold">Дата рождения</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_1_birthday" name="vod_1_birthday" value="{{osago_osk.voditeli[0].birthday}}">
+                                        </div>
+                                    </div>
+
+                                    <h4 class="card-title text-primary">Водительское удостоверение</h4>
+                                    <div class="mb-3 row">
+                                        <label for="vod_1_seriya_vu" class="col-md-2 col-form-label fw-bold">Серия</label>
+                                        <div class="col-md-10">
+                                            <input id="vod_1_seriya_vu" class="form-control" type="text" name="vod_1_seriya_vu" value="{{osago_osk.voditeli[0].seriya_vu}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_1_nomer_vu" class="col-md-2 col-form-label fw-bold">Номер</label>
+                                        <div class="col-md-10">
+                                            <input id="vod_1_nomer_vu" class="form-control input-mask" data-inputmask="'mask': '9', 'repeat': 6, 'greedy' : false" name="vod_1_nomer_vu" value="{{osago_osk.voditeli[0].nomer_vu}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_1_data_vidachi_vu" class="col-md-2 col-form-label fw-bold">Дата выдачи</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_1_data_vidachi_vu" name="vod_1_data_vidachi_vu" value="{{osago_osk.voditeli[0].data_vidachi_vu}}">
+                                        </div>
+                                    </div>
+
+                                    <br>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_1_nachalo_staga" class="col-md-2 col-form-label fw-bold">Начало стажа</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_1_nachalo_staga" name="vod_1_nachalo_staga" value="{{osago_osk.voditeli[0].nachalo_staga}}">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" v-show="selected==2 || selected==3 || selected==4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title text-primary">Водитель-2</h4>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_2_surname" class="col-md-2 col-form-label fw-bold">Фамилия</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_2_surname" name="vod_2_surname" value="{{osago_osk.voditeli[1].surname}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_2_name" class="col-md-2 col-form-label fw-bold">Имя</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_2_name" name="vod_2_name" value="{{osago_osk.voditeli[1].name}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_2_otchestvo" class="col-md-2 col-form-label fw-bold">Отчество</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_2_otchestvo" name="vod_2_otchestvo" value="{{osago_osk.voditeli[1].otchestvo}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_2_birthday" class="col-md-2 col-form-label fw-bold">Дата рождения</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_2_birthday" name="vod_2_birthday" value="{{osago_osk.voditeli[1].birthday}}">
+                                        </div>
+                                    </div>
+
+                                    <h4 class="card-title text-primary">Водительское удостоверение</h4>
+                                    <div class="mb-3 row">
+                                        <label for="vod_2_seriya_vu" class="col-md-2 col-form-label fw-bold">Серия</label>
+                                        <div class="col-md-10">
+                                            <input id="vod_2_seriya_vu" class="form-control" type="text" name="vod_2_seriya_vu" value="{{osago_osk.voditeli[1].seriya_vu}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_2_nomer_vu" class="col-md-2 col-form-label fw-bold">Номер</label>
+                                        <div class="col-md-10">
+                                            <input id="vod_2_nomer_vu" class="form-control input-mask" data-inputmask="'mask': '9', 'repeat': 6, 'greedy' : false" name="vod_2_nomer_vu" value="{{osago_osk.voditeli[1].nomer_vu}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_2_data_vidachi_vu" class="col-md-2 col-form-label fw-bold">Дата выдачи</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_2_data_vidachi_vu" name="vod_2_data_vidachi_vu" value="{{osago_osk.voditeli[1].data_vidachi_vu}}">
+                                        </div>
+                                    </div>
+
+                                    <br>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_2_nachalo_staga" class="col-md-2 col-form-label fw-bold">Начало стажа</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_2_nachalo_staga" name="vod_2_nachalo_staga" value="{{osago_osk.voditeli[1].nachalo_staga}}">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" v-show="selected==3 || selected==4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title text-primary">Водитель-3</h4>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_3_surname" class="col-md-2 col-form-label fw-bold">Фамилия</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_3_surname" name="vod_3_surname" value="{{osago_osk.voditeli[2].surname}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_3_name" class="col-md-2 col-form-label fw-bold">Имя</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_3_name" name="vod_3_name" value="{{osago_osk.voditeli[2].name}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_3_otchestvo" class="col-md-2 col-form-label fw-bold">Отчество</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_3_otchestvo" name="vod_3_otchestvo" value="{{osago_osk.voditeli[2].otchestvo}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_3_birthday" class="col-md-2 col-form-label fw-bold">Дата рождения</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_3_birthday" name="vod_3_birthday" value="{{osago_osk.voditeli[2].birthday}}">
+                                        </div>
+                                    </div>
+
+                                    <h4 class="card-title text-primary">Водительское удостоверение</h4>
+                                    <div class="mb-3 row">
+                                        <label for="vod_3_seriya_vu" class="col-md-2 col-form-label fw-bold">Серия</label>
+                                        <div class="col-md-10">
+                                            <input id="vod_3_seriya_vu" class="form-control" type="text" name="vod_3_seriya_vu" value="{{osago_osk.voditeli[2].seriya_vu}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_3_nomer_vu" class="col-md-2 col-form-label fw-bold">Номер</label>
+                                        <div class="col-md-10">
+                                            <input id="vod_3_nomer_vu" class="form-control input-mask" data-inputmask="'mask': '9', 'repeat': 6, 'greedy' : false" name="vod_3_nomer_vu" value="{{osago_osk.voditeli[2].nomer_vu}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_3_data_vidachi_vu" class="col-md-2 col-form-label fw-bold">Дата выдачи</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_3_data_vidachi_vu" name="vod_3_data_vidachi_vu" value="{{osago_osk.voditeli[2].data_vidachi_vu}}">
+                                        </div>
+                                    </div>
+
+                                    <br>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_3_nachalo_staga" class="col-md-2 col-form-label fw-bold">Начало стажа</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_3_nachalo_staga" name="vod_3_nachalo_staga" value="{{osago_osk.voditeli[2].nachalo_staga}}">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" v-show="selected==4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title text-primary">Водитель-4</h4>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_4_surname" class="col-md-2 col-form-label fw-bold">Фамилия</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_4_surname" name="vod_4_surname" value="{{osago_osk.voditeli[3].surname}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_4_name" class="col-md-2 col-form-label fw-bold">Имя</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_4_name" name="vod_4_name" value="{{osago_osk.voditeli[3].name}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_4_otchestvo" class="col-md-2 col-form-label fw-bold">Отчество</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" id="vod_4_otchestvo" name="vod_4_otchestvo" value="{{osago_osk.voditeli[3].otchestvo}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_4_birthday" class="col-md-2 col-form-label fw-bold">Дата рождения</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_4_birthday" name="vod_4_birthday" value="{{osago_osk.voditeli[3].birthday}}">
+                                        </div>
+                                    </div>
+
+                                    <h4 class="card-title text-primary">Водительское удостоверение</h4>
+                                    <div class="mb-3 row">
+                                        <label for="vod_4_seriya_vu" class="col-md-2 col-form-label fw-bold">Серия</label>
+                                        <div class="col-md-10">
+                                            <input id="vod_4_seriya_vu" class="form-control" type="text" name="vod_4_seriya_vu" value="{{osago_osk.voditeli[3].seriya_vu}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_4_nomer_vu" class="col-md-2 col-form-label fw-bold">Номер</label>
+                                        <div class="col-md-10">
+                                            <input id="vod_4_nomer_vu" class="form-control input-mask" data-inputmask="'mask': '9', 'repeat': 6, 'greedy' : false" name="vod_4_nomer_vu" value="{{osago_osk.voditeli[3].nomer_vu}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_4_data_vidachi_vu" class="col-md-2 col-form-label fw-bold">Дата выдачи</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_4_data_vidachi_vu" name="vod_4_data_vidachi_vu" value="{{osago_osk.voditeli[3].data_vidachi_vu}}">
+                                        </div>
+                                    </div>
+
+                                    <br>
+
+                                    <div class="mb-3 row">
+                                        <label for="vod_4_nachalo_staga" class="col-md-2 col-form-label fw-bold">Начало стажа</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="date" id="vod_4_nachalo_staga" name="vod_4_nachalo_staga" value="{{osago_osk.voditeli[3].nachalo_staga}}">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title text-primary">Сроки</h4>
+
+                                <div class="mb-3 row">
+                                    <label for="OSAGO_start" class="col-md-2 col-form-label fw-bold">Дата начала ОСАГО</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="date" id="OSAGO_start" name="OSAGO_start" value="{{osago_osk.OSAGO_start}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="OSAGO_count_mouth" class="col-md-2 col-form-label fw-bold">Колличество месяцев</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="OSAGO_count_mouth" name="OSAGO_count_mouth" value="{{osago_osk.OSAGO_count_mouth}}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title text-primary">Страховые компании</h4>
+                                <div class="row">
+                                    <div class="col-xl-3 col-sm-6">
+                                        {% for comp in strah_comps[:10] %}
+                                            <div class="form-check form-checkbox-outline form-check-primary mb-3">
+                                                {% if osago_osk.strah_comp.find(comp) != -1 %}
+                                                    <input class="form-check-input" type="checkbox" id="strah_{{comp}}" name="{{comp}}" checked>
+                                                {% else %}
+                                                    <input class="form-check-input" type="checkbox" id="strah_{{comp}}" name="{{comp}}">
+                                                {% endif %}
+                                                <label class="form-check-label" for="strah_{{comp}}"> {{comp}} </label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="col-xl-3 col-sm-6">
+                                        {% for comp in strah_comps[10:20] %}
+                                            <div class="form-check form-checkbox-outline form-check-primary mb-3">
+                                                {% if osago_osk.strah_comp.find(comp) != -1 %}
+                                                    <input class="form-check-input" type="checkbox" id="strah_{{comp}}" name="{{comp}}" checked>
+                                                {% else %}
+                                                    <input class="form-check-input" type="checkbox" id="strah_{{comp}}" name="{{comp}}">
+                                                {% endif %}
+                                                <label class="form-check-label" for="strah_{{comp}}"> {{comp}} </label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="col-xl-3 col-sm-6">
+                                        {% for comp in strah_comps[20:30] %}
+                                            <div class="form-check form-checkbox-outline form-check-primary mb-3">
+                                                {% if osago_osk.strah_comp.find(comp) != -1 %}
+                                                    <input class="form-check-input" type="checkbox" id="strah_{{comp}}" name="{{comp}}" checked>
+                                                {% else %}
+                                                    <input class="form-check-input" type="checkbox" id="strah_{{comp}}" name="{{comp}}">
+                                                {% endif %}
+                                                <label class="form-check-label" for="strah_{{comp}}"> {{comp}} </label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="col-xl-3 col-sm-6">
+                                        {% for comp in strah_comps[30:] %}
+                                            <div class="form-check form-checkbox-outline form-check-primary mb-3">
+                                                {% if osago_osk.strah_comp.find(comp) != -1 %}
+                                                    <input class="form-check-input" type="checkbox" id="strah_{{comp}}" name="{{comp}}" checked>
+                                                {% else %}
+                                                    <input class="form-check-input" type="checkbox" id="strah_{{comp}}" name="{{comp}}">
+                                                {% endif %}
+                                                <label class="form-check-label" for="strah_{{comp}}"> {{comp}} </label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title text-primary">Другое</h4>
+
+                                <div class="mb-3 row">
+                                    <label for="trans_num" class="col-md-2 col-form-label fw-bold">Номер сделки</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="trans_num" name="trans_num" value="{{osago_osk.trans_num}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="est_price_policy" class="col-md-2 col-form-label fw-bold">Заявленная стоимость полиса</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="est_price_policy" name="est_price_policy" value="{{osago_osk.est_price_policy}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="real_price_policy" class="col-md-2 col-form-label fw-bold">Фактическая стоимость полиса</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="real_price_policy" name="real_price_policy" value="{{osago_osk.real_price_policy}}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="num_group_wa" class="col-md-2 col-form-label fw-bold">Номер группы WA</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="text" id="num_group_wa" name="num_group_wa" value="{{osago_osk.num_group_wa}}">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row me-auto">
+                    <button type="submit" class="btn btn-primary btn-lg waves-effect waves-light">Сохранить</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        Vue.createApp({
+          data() {
+              if ('{{osago_osk.sobstv_yavl_strah}}' != '') {
+                  return {
+                      checked: true
+                    };
+              } else {
+                  return {
+                      checked: false
+                  }
+              }
+
+          }
+        }).mount('#v-sobstv')
+
+        Vue.createApp({
+          data() {
+              if ('{{osago_osk.c_ogr_or_not}}' != 'Без ограничений') {
+                  var checked = true;
+              } else {
+                  var checked = false;
+              }
+
+              if ('{{osago_osk.voditeli[3].surname}}' != ''){
+                  var selected = 4;
+              }
+              else if ('{{osago_osk.voditeli[2].surname}}' != ''){
+                  var selected = 3;
+              }
+              else if ('{{osago_osk.voditeli[1].surname}}' != ''){
+                  var selected = 2;
+              }
+              else if ('{{osago_osk.voditeli[0].surname}}' != ''){
+                  var selected = 1;
+              }
+              else {
+                  var selected = 0;
+              }
+            return {
+              checked: checked,
+                selected: selected
+            }
+          }
+        }).mount('#voditeli')
+
+        Vue.createApp({
+          data() {
+              if ('{{ osago_osk.pricep }}' == 'Есть прицеп'){
+                  var pricep = true;
+              }
+              else {
+                  var pricep = false;
+              }
+            return {
+                selected_mark: '{{osago_osk.mark}}',
+                json_model: {data:[]},
+                selected_model: '{{osago_osk.model}}',
+                category: "",
+                json_mod: "",
+                auto_year: '{{osago_osk.year}}',
+                set_conf_ruchn: "",
+                selected_modification: '{{osago_osk.modification}}',
+                pricep: pricep
+            }
+          },
+            methods: {
+                load_model() {
+                  axios
+                      .post("{{url_for('osk.load_models')}}", {"mark":this.selected_mark})
+                      .then(response => (this.json_model = response.data));
+                },
+                select_model(){
+                    this.category = this.json_model.categoryes[this.selected_model];
+                },
+                load_modification(){
+                    axios
+                      .post("{{url_for('osk.load_modification')}}", {"mark":this.selected_mark, "model": this.selected_model, "year": this.auto_year})
+                      .then(response => (this.json_mod = response.data));
+                },
+              },
+
+
+        }).mount('#auto')
+
+        Vue.createApp({}).mount('#v-type-doc')
+
+    </script>
+{% endblock %}

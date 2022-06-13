@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="shortcut icon" href="/static/images/favicon.ico">
+
+        <!-- Bootstrap Css -->
+        <link href="/static/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css" />
+        <!-- Icons Css -->
+        <link href="/static/css/icons.min.css" rel="stylesheet" type="text/css" />
+        <!-- App Css-->
+        <link href="/static/css/app.min.css" id="app-style" rel="stylesheet" type="text/css" />
+
+        <!-- Responsive Table css -->
+        <link href="/static/libs/admin-resources/rwd-table/rwd-table.min.css" rel="stylesheet" type="text/css" />
+
+
+        <meta charset="utf-8" />
+        {% block head %}
+
+        {% endblock %}
+    </head>
+
+    <body data-sidebar="dark">
+        <header id="page-topbar">
+            <div class="navbar-header">
+                <div class="d-flex">
+                    <!-- LOGO -->
+                    <div class="navbar-brand-box">
+                        <a href="{{url_for('main.index')}}" class="logo logo-light">
+                            <span class="logo-sm">
+                                <img src="/static/images/logo-light.svg" alt="" height="40">
+                            </span>
+                            <span class="logo-lg">
+                                <img src="/static/images/logo-light.png" alt="" height="40">
+                            </span>
+                        </a>
+                    </div>
+
+                    <button type="button" class="btn btn-sm px-3 font-size-16 header-item waves-effect"
+                        id="vertical-menu-btn">
+                        <i class="fa fa-fw fa-bars"></i>
+                    </button>
+
+                </div>
+
+                <div class="d-flex">
+
+                    <div class="dropdown d-none d-lg-inline-block ms-1">
+                        <button type="button" class="btn header-item noti-icon waves-effect" data-toggle="fullscreen">
+                            <i class="bx bx-fullscreen"></i>
+                        </button>
+                    </div>
+
+                    <div class="dropdown d-inline-block">
+                        <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <img class="rounded-circle header-profile-user" src="/static/images/users/avatar-1.jpg"
+                                alt="Header Avatar">
+                            <span class="d-none d-xl-inline-block ms-1">{{current_user.username}}</span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end" style="">                            <!-- item-->
+                            <a class="dropdown-item text-danger" href="{{url_for('auth.logout')}}"><i class="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i> <span>Выход</span></a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </header>
+
+
+        <div class="vertical-menu">
+
+            <div data-simplebar="init" class="h-100"><div class="simplebar-wrapper" style="margin: 0px;"><div class="simplebar-height-auto-observer-wrapper"><div class="simplebar-height-auto-observer"></div></div><div class="simplebar-mask"><div class="simplebar-offset" style="right: -17px; bottom: 0px;"><div class="simplebar-content-wrapper" style="height: 100%; overflow: hidden scroll;"><div class="simplebar-content" style="padding: 0px;">
+
+                <!--- Sidemenu -->
+                <div id="sidebar-menu" class="mm-active">
+                    <!-- Left Menu Start -->
+                    <ul class="metismenu list-unstyled mm-show" id="side-menu">
+                        <li class="menu-title">Меню</li>
+
+                        <li class="mm-active">
+                            <a href="javascript: void(0);" class="waves-effect mm-active">
+                                <i class="bx bx-home-circle"></i><span class="badge rounded-pill bg-info float-end"></span>
+                                <span>Панель управления</span>
+                            </a>
+                            <ul class="sub-menu mm-collapse mm-show" aria-expanded="false">
+                                <li class="mm-active"><a href="index.html" class="active"></a></li>
+                                <li>
+                                    <a href="{{url_for('admin.add_user')}}">
+                                        <i class="bx bx-user-plus"></i>
+                                        Добавить пользователя
+                                    </a>
+                                </li>
+                                <li><a href="{{url_for('admin.users')}}"><i class="bx bx-user"></i>Пользователи</a></li>
+                                <li><a href="{{url_for('admin.config')}}"><i class="dripicons-gear"></i>Настройки</a></li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="bx bxs-user-detail"></i>
+                                <span>Заявки</span>
+                            </a>
+                            <ul class="sub-menu mm-collapse" aria-expanded="false">
+                                <li>
+                                    <a href="javascript: void(0);" class="has-arrow waves-effect" aria-expanded="false">
+                                        <i class="dripicons-document-new"></i>Создать заявку
+                                    </a>
+                                    <ul class="sub-menu mm-collapse" aria-expanded="false">
+                                        <li><a href="{{url_for('alfa.add')}}">Альфа</a></li>
+                                    </ul>
+                                    <ul class="sub-menu mm-collapse" aria-expanded="false">
+                                        <li><a href="{{url_for('vsk.add')}}">ВСК</a></li>
+                                    </ul>
+                                </li>
+
+                                <li><a href="{{url_for('request_insurance.table_request', status_request='active')}}"><i class="bx bx-loader-circle"></i>Активные заявки</a></li>
+                                <li><a href="{{url_for('request_insurance.table_request', status_request='success')}}"><i class="bx bx-check"></i>Успешные заявки</a></li>
+                                <li><a href="{{url_for('request_insurance.table_request', status_request='delete')}}"><i class="dripicons-document-delete"></i>Отмененные заявки</a></li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="dripicons-graph-bar"></i>
+                                <span>Статистика</span>
+                            </a>
+                            <ul class="sub-menu mm-collapse" aria-expanded="false">
+                                <li><a href="{{url_for('statistic.info')}}"><i class="dripicons-graph-pie"></i>Инфо</a></li>
+                            </ul>
+                        </li>
+
+                    </ul>
+                </div>
+                <!-- Sidebar -->
+            </div></div></div></div><div class="simplebar-placeholder" style="width: auto; height: 1306px;"></div></div><div class="simplebar-track simplebar-horizontal" style="visibility: hidden;"><div class="simplebar-scrollbar" style="transform: translate3d(0px, 0px, 0px); display: none;"></div></div><div class="simplebar-track simplebar-vertical" style="visibility: visible;"><div class="simplebar-scrollbar" style="height: 575px; transform: translate3d(0px, 0px, 0px); display: block;"></div></div></div>
+        </div>
+
+        <div class="main-content">
+            <div class="card">
+                <div class="card-body">
+                    {% block body %}
+
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+
+        <!-- JAVASCRIPT -->
+        <script src="/static/libs/jquery/jquery.min.js"></script>
+        <script src="/static/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="/static/libs/metismenu/metisMenu.min.js"></script>
+        <script src="/static/libs/simplebar/simplebar.min.js"></script>
+        <script src="/static/libs/node-waves/waves.min.js"></script>
+        <script src="/static/libs/parsleyjs/parsley.min.js"></script>
+
+        <!-- App js -->
+        <script src="/static/js/app.js"></script>
+
+        <!-- form mask -->
+        <script src="/static/libs/inputmask/min/jquery.inputmask.bundle.min.js"></script>
+        <!-- form mask init -->
+        <script src="/static/js/pages/form-mask.init.js"></script>
+
+        <!-- Responsive Table js -->
+        <script src="/static/libs/admin-resources/rwd-table/rwd-table.min.js"></script>
+        <script src="/static/js/pages/form-validation.init.js"></script>
+
+        <!-- Init js -->
+        <script src="/static/js/pages/table-responsive.init.js"></script>
+
+    </body>
+
+    {% block js_page %}
+
+    {% endblock %}

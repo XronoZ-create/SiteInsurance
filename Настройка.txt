@@ -1,0 +1,33 @@
+apt-get update;apt-get install -y locales;locale-gen "ru_RU.UTF-8";sudo apt-get -y install language-pack-ru;sudo update-locale LANG=ru_RU.UTF-8;sudo apt-get update;sudo apt-get install -y htop;\
+sudo apt-get install -y unzip xvfb libxi6 libgconf-2-4;wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb;sudo apt --fix-broken install;sudo apt-get -y install default-jdk;sudo apt-get -y install chromium-chromedriver;\
+wget https://chromedriver.storage.googleapis.com/91.0.4472.19/chromedriver_linux64.zip -O /usr/local/bin/chromedriver_linux64.zip;wget https://chromedriver.storage.googleapis.com/91.0.4472.19/chromedriver_linux64.zip -O /usr/bin/chromedriver_linux64.zip;\
+sudo apt-get -y install unrar;sudo apt-get -y install unzip;unzip /usr/local/bin/chromedriver_linux64.zip -d /usr/local/bin/;unzip /usr/bin/chromedriver_linux64.zip -d /usr/bin/;sudo apt update;\
+sudo apt -y install software-properties-common;sudo add-apt-repository ppa:deadsnakes/ppa;sudo apt update;sudo apt -y install python3.8;\
+sudo apt -y install python3-pip;sudo apt update;apt -y install python3.8-distutils;sudo apt update;sudo apt install curl;curl https://bootstrap.pypa.io/get-pip.py | sudo -H python3.8;\
+
+
+python3.8 -m pip install gunicorn;\
+python3.8 -m pip install WTForms;\
+python3.8 -m pip install Flask==2.0.1;\
+python3.8 -m pip install SQLAlchemy;\
+python3.8 -m pip install Flask-Login;\
+python3.8 -m pip install requests;\
+python3.8 -m pip install Flask-WTF;\
+python3.8 -m pip install Flask-Bootstrap4;\
+python3.8 -m pip install Flask-Mail;\
+python3.8 -m pip install Flask-Moment;\
+python3.8 -m pip install Flask-SQLAlchemy;\
+python3.8 -m pip install eventlet;\
+python3.8 -m pip install celery;\
+python3.8 -m pip install Flask-Script;\
+python3.8 -m pip install Flask-Migrate;\
+python3.8 -m pip install Flask-SocketIO;\
+python3.8 -m pip install SQLAlchemy-Utils;\
+python3.8 -m pip install pydantic;\
+python3.8 -m pip install gevent;
+
+gunicorn --bind 0.0.0.0:5000 --workers=15 run:app
+
+sudo systemctl start SiteInsurance
+sudo systemctl status SiteInsurance
+sudo systemctl enable SiteInsurance

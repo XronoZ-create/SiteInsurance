@@ -1,0 +1,835 @@
+{% extends "request_insurance/base_page_active_request.html" %}
+
+{% block head %}
+    <title>Активные заявки</title>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+{% endblock %}
+
+{% block body %}
+    <div id="loading" class="hide">
+      <div id="loading-content">
+        <div class="spinner-border" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    </div>
+    <style>
+        #loading {
+           width: 100%;
+           height: 100%;
+           top: 0px;
+           left: 0px;
+           position: fixed;
+           display: block;
+           opacity: 0.7;
+           background-color: #fff;
+           z-index: 99;
+           text-align: center;
+        }
+
+        #loading-content {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          text-align: center;
+          z-index: 100;
+        }
+
+        .hide{
+          display: none;
+        }
+    </style>
+
+        <div class="container-fluid" id="app">
+            <!-- --------------------------------------------- Блок Форм ---------------------------------------------->
+            {% for osago in all_osago|reverse%}
+                <form action="" method="post" id="set_in_job_{{ osago.id }}">
+                    <input class="form-control" type="hidden" name="type_osago" value="{{osago.type_osago}}" form="set_in_job_{{ osago.id }}">
+                    <input class="form-control" type="hidden" name="id" value="{{osago.id}}" form="set_in_job_{{ osago.id }}">
+                    <input class="form-control" type="hidden" name="type_action" value="set_in_job" form="set_in_job_{{ osago.id }}">
+                </form>
+                <form action="" method="post" id="set_oformitel_{{ osago.type_osago }}_{{ osago.id }}">
+                    <input class="form-control" type="hidden" name="type_osago" value="{{osago.type_osago}}" form="set_in_job_{{ osago.id }}">
+                    <input class="form-control" type="hidden" name="id" value="{{osago.id}}" form="set_in_job_{{ osago.id }}">
+                </form>
+                <form action="" method="post" id="edit_form_{{ osago.type_osago }}_{{ osago.id }}">
+                </form>
+            {% endfor %}
+            <!-- ------------------------------------------------- End ------------------------------------------------>
+        <div id="alerts"></div>
+
+            <!-- start page title -->
+            <br><br><br><br>
+            <div class="row">
+                <div class="page-title-box d-sm-flex align-items-center">
+                    <div class="col-10">
+                        <h4 class="mb-sm-0 align-left font-size-18">Активные заявки
+                            <span class="badge bg-success rounded-pill"> Свободно серверов :{{ count_free_servers }} </span>
+                        </h4>
+                    </div>
+                    <div class="row justify-content-end">
+                         <div class="col-1">
+                            <form action="" method="post" id="multiply_osago"></form>
+                            <input class="form-control" type="hidden" name="type_osago" value="none" form="multiply_osago">
+                            <button title="Power выбранные" type="submit" class="btn btn-success" form="multiply_osago" name="type_action" value="start_multiply_osago">
+                                <i class="dripicons-power"></i>
+                            </button>
+                         </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end page title -->
+
+            <div id="modal_vue">
+                <div v-if="showModalSound" id="modal_sound" hidden>
+                    <transition name="modalSound">
+                      <div class="modal-mask" style="position: fixed;z-index: 9998; top: 0; left: 0; width: 100%;height: 100%;background-color: rgba(0, 0, 0, .5);display: table;transition: opacity .3s ease;">
+                        <div class="modal-wrapper" style="display: table-cell;vertical-align: middle;">
+                          <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title">Звуковые уведомления</h5>
+                                <button class="btn-close" data-dismiss="modal" aria-label="Close" @click="showModalSound = false"></button>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" @click="showModalSound = false">Включить</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </transition>
+                </div>
+
+                <div id="modal_extended_information" hidden>
+                  <div class="modal-mask" style="position: fixed;z-index: 9998; top: 0; left: 0; width: 100%;height: 100%;background-color: rgba(0, 0, 0, .5);display: table;transition: opacity .3s ease;">
+                    <div class="modal-wrapper" style="display: table-cell;vertical-align: middle;">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title">Заявка номер: <span id="number_bid"></span></h5>
+                            <button class="btn-close" data-dismiss="modal" aria-label="Close" onclick="document.getElementById('modal_extended_information').hidden=true;"></button>
+                          </div>
+                            <div class="modal-body">
+                                <tr class="container-fluid">
+                                    <h5 class="text-center">Сведения о заявке</h5>
+                                    <div class="container">
+                                      <div class="row">
+                                        <div class="col fw-bold">
+                                          Логин
+                                        </div>
+                                        <div class="col fw-bold" id="login_parea_modal">
+                                        </div>
+                                      </div>
+
+                                      <div class="row">
+                                        <div class="col fw-bold">
+                                          Пароль
+                                        </div>
+                                        <div class="col fw-bold" id="password_parea_modal">
+
+                                        </div>
+                                      </div>
+
+                                      <div class="row">
+                                        <div class="col fw-bold">
+                                          Сервер
+                                        </div>
+                                        <div class="col fw-bold" id="server_modal">
+
+                                        </div>
+                                      </div>
+
+                                      <div class="row">
+                                        <div class="col fw-bold">
+                                          Страховые компании
+                                        </div>
+                                        <div class="col fw-bold" id="strah_comp_modal">
+
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <hr>
+                                    <h5 class="text-center">История</h5>
+                                    <div id="history_modal"></div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+
+
+            <br>
+
+            <div class="row" id="mainvue">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-rep-plugin">
+                                <div class="table-sm mb-0" data-pattern="priority-columns">
+                                    <table class="table table-striped" id="table">
+                                        <thead id="tablehead">
+                                            <tr>
+                                                <th data-field="state"></th>
+                                                <th data-priority="3">#</th>
+                                                <th>Кабинет</th>
+                                                <th data-priority="6">Операции</th>
+{#                                                <th data-priority="6">Пуск</th>#}
+                                                <th data-priority="3">Статус</th>
+                                                <th>Время</th>
+                                                <th style="min-width:150px">
+                                                    <label>
+                                                        <select class="form-select-sm" v-model="selected_otv" @change="select_otv_oformitel">
+                                                            <option value="">Отв.</option>
+                                                            {% for user in all_users %}
+                                                                <option>{{ user.username }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </label>
+                                                </th>
+                                                <th style="min-width:150px">
+                                                    <select class="form-select-sm" v-model="selected_oformitel" @change="select_otv_oformitel">
+                                                        <option value="" selected>Оформ.</option>
+                                                        {% for user in all_users %}
+                                                            <option>{{ user.username }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </th>
+                                                <th data-priority="3" style="min-width: 80px;">№ сделки</th>
+                                                <th data-priority="1">Страхователь</th>
+                                                <th data-priority="3">Ссылка</th>
+{#                                                <th data-priority="6">Приоритет</th>#}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <!-- Избранное -->
+                                                {% for osago in all_osago|reverse%}
+                                                    {% if osago.priority_application is sameas true %}
+                                                        <tr class="table-info">
+                                                            <th class="bs-checkbox">
+                                                                <input class="form-check-input" name="checkbox_osago_{{ osago.type_osago }}_{{ osago.id }}" type="checkbox" form="multiply_osago" style="pointer-events: none;">
+                                                            </th>
+                                                            <th>
+                                                                {{osago.id}}
+                                                                <input class="form-control" type="hidden" name="id" value="{{osago.id}}" form="edit_form_{{ osago.type_osago }}_{{ osago.id }}" onclick="">
+                                                            </th>
+                                                            <th>
+                                                                <input class="form-control" type="hidden" name="type_osago" value="{{osago.type_osago}}" form="edit_form_{{ osago.type_osago }}_{{ osago.id }}">
+                                                                <div class="btn-group dropend" style="align-items:center;">
+                                                                    <span>{{ osago.name_type }}</span>
+                                                                    {% if osago.list_child_osago|length != 0 %}
+                                                                         <div class="btn-group dropend">
+                                                                            <button type="button" class="btn dropdown-toggle waves-effect waves-light dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                                <i class="mdi mdi-chevron-right"></i>
+                                                                            </button>
+                                                                            <div class="dropdown-menu">
+                                                                                <div class="table-rep-plugin">
+                                                                                    <div class="table-sm mb-0" data-pattern="priority-columns">
+                                                                                        <table class="table table-striped" id="table">
+                                                                                            <tbody>
+                                                                                                {% for child_osago in osago.list_child_osago %}
+                                                                                                    <form action="" method="post" id="child_edit_form_{{ child_osago.type_osago }}_{{ child_osago.id }}">
+                                                                                                        <input class="form-control" type="hidden" name="id" value="{{child_osago.id}}" form="child_edit_form_{{ child_osago.type_osago }}_{{ child_osago.id }}" onclick="">
+                                                                                                        <input class="form-control" type="hidden" name="type_osago" value="{{child_osago.type_osago}}" form="child_edit_form_{{ child_osago.type_osago }}_{{ child_osago.id }}">
+                                                                                                    </form>
+                                                                                                    <tr class="{% if child_osago.prepared is sameas true %}table-info{% else %}table-danger{% endif %}" >
+                                                                                                        <th class="bs-checkbox">
+                                                                                                            <a>{{ child_osago.name_type }}</a>
+                                                                                                        </th>
+                                                                                                        <th class="bs-checkbox">
+                                                                                                            <button type="submit" class="btn btn-sm btn-secondary" form="child_edit_form_{{ child_osago.type_osago }}_{{ child_osago.id }}" name="type_action" value="edit" title="Изменить">
+                                                                                                                <i class="dripicons-document-edit"></i>
+                                                                                                            </button>
+                                                                                                            <button class="btn btn-sm btn-secondary" title="Подробно" onclick="load_info_order('{{ child_osago.id }}', '{{ child_osago.type_osago }}')">
+                                                                                                                <i class="fas fa-eye"></i>
+                                                                                                            </button>
+                                                                                                            <button type="submit" class="btn btn-sm {% if not child_osago.prepared%} btn-warning {% elif child_osago.server == None %} btn-success {% else %} btn-danger {% endif %}" form="child_edit_form_{{ child_osago.type_osago }}_{{ child_osago.id }}" name="type_action" value="power" {% if child_osago.prepared %} title="Power" {% else %} style="pointer-events: auto;" disabled title="Необходимо проверить данные" {% endif %}>
+                                                                                                                {% if child_osago.prepared %}
+                                                                                                                    <i class="dripicons-power"></i>
+                                                                                                                {% else %}
+                                                                                                                    <i class="bx bx-error"></i>
+                                                                                                                {% endif %}
+                                                                                                            </button>
+                                                                                                        </th>
+                                                                                                        <th>
+                                                                                                            <span class="badge
+                                                                                                                {% if child_osago.status_osago.id == 1 %}
+                                                                                                                    badge-soft-dark
+                                                                                                                {% elif child_osago.status_osago.id == 2 %}
+                                                                                                                    bg-info
+                                                                                                                {% elif child_osago.status_osago.id == 3 %}
+                                                                                                                    bg-warning
+                                                                                                                {% elif child_osago.status_osago.id == 4 %}
+                                                                                                                    bg-success
+                                                                                                                {% elif child_osago.status_osago.id == 5 %}
+                                                                                                                    bg-danger
+                                                                                                                {% elif child_osago.status_osago.id == 6 %}
+                                                                                                                    bg-danger
+                                                                                                                {% endif %} ">
+                                                                                                                    {{ child_osago.status_osago.name }}
+                                                                                                            </span>
+                                                                                                        </th>
+                                                                                                        <th>
+                                                                                                            {% if child_osago.status_osago.id == 2 %}
+                                                                                                                <div class="badge bg-dark" id="countdown_{{ child_osago.id }}"></div>
+                                                                                                                <script>
+                                                                                                                    var yourDateToGo_{{ child_osago.id }} = new Date(); //here you're making new Date object
+                                                                                                                    yourDateToGo_{{ child_osago.id }}.setTime(yourDateToGo_{{ child_osago.id }}.getTime() + ({{ child_osago.reg_date_minutes }} * 60 * 1000)); //your're setting date in this object 1 day more from now
+                                                                                                                    //you can change number of days to go by putting any number in place of 1
+
+                                                                                                                    var timing_{{ child_osago.id }} = setInterval( // you're making an interval - a thing, that is updating content after number of miliseconds, that you're writing after comma as second parameter
+                                                                                                                      function () {
+
+                                                                                                                        var currentDate_{{ child_osago.id }} = new Date().getTime(); //same thing as above
+                                                                                                                        var timeLeft_{{ child_osago.id }} = yourDateToGo_{{ child_osago.id }} - currentDate_{{ child_osago.id }}; //difference between time you set and now in miliseconds
+
+                                                                                                                        var minutes_{{ child_osago.id }} = Math.floor((timeLeft_{{ child_osago.id }} % (1000 * 60 * 60)) / (1000 * 60)); //conversion miliseconds on minutes
+                                                                                                                        if (minutes_{{ child_osago.id }} < 10) minutes="0"+minutes_{{ child_osago.id }};
+                                                                                                                        var seconds_{{ child_osago.id }} = Math.floor((timeLeft_{{ child_osago.id }} % (1000 * 60)) / 1000);//conversion miliseconds on seconds
+                                                                                                                        if (seconds_{{ child_osago.id }} < 10) seconds="0"+seconds_{{ child_osago.id }};
+
+                                                                                                                        document.getElementById("countdown_{{ child_osago.id }}").innerHTML = minutes_{{ child_osago.id }} + "м" + seconds_{{ child_osago.id }} + "с"; // putting number of days, hours, minutes and seconds in div,
+                                                                                                                        //which id is countdown
+
+                                                                                                                        if (timeLeft_{{ child_osago.id }} <= 0) {
+                                                                                                                          clearInterval(timing_{{ child_osago.id }});
+                                                                                                                          document.getElementById("countdown_{{ child_osago.id }}").innerHTML = "Время истекло"; //if there's no time left, programm in this 2 lines is clearing interval (nothing is counting now)
+                                                                                                                          //and you see "It's over" instead of time left
+                                                                                                                        }
+                                                                                                                      }, 1000);
+                                                                                                                </script>
+                                                                                                            {% endif %}
+                                                                                                        </th>
+                                                                                                        <th>{% if child_osago.url_pay != '' %}<a target="_blank" rel="noopener noreferrer" href="{{child_osago.url_pay}}" onclick="document.getElementById('set_in_job_{{ child_osago.id }}').submit();">Оплата</a>{% endif %}</th>
+
+                                                                                                    </tr>
+                                                                                                {% endfor %}
+                                                                                            </tbody>
+                                                                                        </table>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    {% endif %}
+                                                                </div>
+                                                            </th>
+                                                            <th>
+                                                                <div class="btn-group mt-4 mt-md-0" role="group">
+                                                                    <button type="submit" class="btn btn-secondary" form="edit_form_{{ osago.type_osago }}_{{ osago.id }}" name="type_action" value="delete" title="Удалить">
+                                                                        <i class="dripicons-trash"></i>
+                                                                    </button>
+                                                                    <button type="submit" class="btn btn-secondary" form="edit_form_{{ osago.type_osago }}_{{ osago.id }}" name="type_action" value="edit" title="Изменить">
+                                                                        <i class="dripicons-document-edit"></i>
+                                                                    </button>
+                                                                    <button type="submit" class="btn btn-secondary" form="edit_form_{{ osago.type_osago }}_{{ osago.id }}" name="type_action" value="success" title="Успешно">
+                                                                        <i class="dripicons-thumbs-up"></i>
+                                                                    </button>
+                                                                    <button class="btn btn-secondary" title="Подробно" onclick="load_info_order('{{ osago.id }}', '{{ osago.type_osago }}')">
+                                                                        <i class="fas fa-eye"></i>
+                                                                    </button>
+                                                                    <button type="submit" class="btn {% if not osago.prepared%} btn-warning {% elif osago.server == None %} btn-success {% else %} btn-danger {% endif %}" form="edit_form_{{ osago.type_osago }}_{{ osago.id }}" name="type_action" value="power" {% if osago.prepared %} title="Power" {% else %} style="pointer-events: auto;" disabled title="Необходимо проверить данные" {% endif %}>
+                                                                        {% if osago.prepared %}
+                                                                            <i class="dripicons-power"></i>
+                                                                        {% else %}
+                                                                            <i class="bx bx-error"></i>
+                                                                        {% endif %}
+                                                                    </button>
+                                                                    <button type="submit" class="btn btn-danger" form="edit_form_{{ osago.type_osago }}_{{ osago.id }}" name="type_action" value="del_favorites" title="Удалить из избранного">
+                                                                        <i class="dripicons-star"></i>
+                                                                    </button>
+                                                                    <button type="submit" class="btn btn-primary" form="edit_form_{{ osago.type_osago }}_{{ osago.id }}" name="type_action" value="duplicate" title="Дублировать заявку">
+                                                                        <i class="bx bxs-duplicate"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </th>
+                                                            <th>
+                                                                <span class="badge
+                                                                    {% if osago.status_osago.id == 1 %}
+                                                                        badge-soft-dark
+                                                                    {% elif osago.status_osago.id == 2 %}
+                                                                        bg-info
+                                                                    {% elif osago.status_osago.id == 3 %}
+                                                                        bg-warning
+                                                                    {% elif osago.status_osago.id == 4 %}
+                                                                        bg-success
+                                                                    {% elif osago.status_osago.id == 5 %}
+                                                                        bg-danger
+                                                                    {% elif osago.status_osago.id == 6 %}
+                                                                        bg-danger
+                                                                    {% endif %} ">
+                                                                        {{ osago.status_osago.name }}
+                                                                </span>
+                                                            </th>
+                                                            <th>
+                                                                {% if osago.status_osago.id == 2 %}
+                                                                    <div class="badge bg-dark" id="countdown_{{ osago.id }}"></div>
+                                                                    <script>
+                                                                        var yourDateToGo_{{ osago.id }} = new Date(); //here you're making new Date object
+                                                                        yourDateToGo_{{ osago.id }}.setTime(yourDateToGo_{{ osago.id }}.getTime() + ({{ osago.reg_date_minutes }} * 60 * 1000)); //your're setting date in this object 1 day more from now
+                                                                        //you can change number of days to go by putting any number in place of 1
+
+                                                                        var timing_{{ osago.id }} = setInterval( // you're making an interval - a thing, that is updating content after number of miliseconds, that you're writing after comma as second parameter
+                                                                          function () {
+
+                                                                            var currentDate_{{ osago.id }} = new Date().getTime(); //same thing as above
+                                                                            var timeLeft_{{ osago.id }} = yourDateToGo_{{ osago.id }} - currentDate_{{ osago.id }}; //difference between time you set and now in miliseconds
+
+                                                                            var minutes_{{ osago.id }} = Math.floor((timeLeft_{{ osago.id }} % (1000 * 60 * 60)) / (1000 * 60)); //conversion miliseconds on minutes
+                                                                            if (minutes_{{ osago.id }} < 10) minutes="0"+minutes_{{ osago.id }};
+                                                                            var seconds_{{ osago.id }} = Math.floor((timeLeft_{{ osago.id }} % (1000 * 60)) / 1000);//conversion miliseconds on seconds
+                                                                            if (seconds_{{ osago.id }} < 10) seconds="0"+seconds_{{ osago.id }};
+
+                                                                            document.getElementById("countdown_{{ osago.id }}").innerHTML = minutes_{{ osago.id }} + "м" + seconds_{{ osago.id }} + "с"; // putting number of days, hours, minutes and seconds in div,
+                                                                            //which id is countdown
+
+                                                                            if (timeLeft_{{ osago.id }} <= 0) {
+                                                                              clearInterval(timing_{{ osago.id }});
+                                                                              document.getElementById("countdown_{{ osago.id }}").innerHTML = "Время истекло"; //if there's no time left, programm in this 2 lines is clearing interval (nothing is counting now)
+                                                                              //and you see "It's over" instead of time left
+                                                                            }
+                                                                          }, 1000);
+                                                                    </script>
+                                                                {% endif %}
+                                                            </th>
+                                                            <th id="otv">
+                                                                {{osago.user_name}}
+                                                            </th>
+                                                            <th id="oformitel">
+                                                                {{ osago.oformitel_name }}
+                                                            </th>
+                                                            <th>{{osago.trans_num}}</th>
+                                                            <th>{{osago.surname}} {{osago.name[0]}}. {{osago.otchestvo[0]}}.</th>
+                                                            <th>{% if osago.url_pay != '' %}<a target="_blank" rel="noopener noreferrer" href="{{osago.url_pay}}" onclick="document.getElementById('set_in_job_{{ osago.id }}').submit();">Оплата</a>{% endif %}</th>
+{#                                                            <th>#}
+{#                                                                <button type="submit" class="btn btn-danger" form="edit_form_{{ osago.id }}" name="type_action" value="del_favorites" title="Удалить из избранного">#}
+{#                                                                    <i class="dripicons-star"></i>#}
+{#                                                                </button>#}
+{#                                                            </th>#}
+                                                        </tr>
+                                                    {% endif %}
+                                                {% endfor %}
+
+                                                <!-- Обычное -->
+                                                {% for osago in all_osago%}
+                                                    {% if osago.priority_application is sameas false %}
+                                                        <tr>
+                                                            <th class="bs-checkbox ">
+                                                                <input class="form-check-input" name="checkbox_osago_{{ osago.type_osago }}_{{ osago.id }}" type="checkbox" form="multiply_osago" style="pointer-events: none;">
+                                                            </th>
+                                                            <th>
+                                                                {{osago.id}}
+                                                                <input class="form-control" type="hidden" name="id" value="{{osago.id}}" form="edit_form_{{ osago.type_osago }}_{{ osago.id }}">
+                                                            </th>
+                                                            <th>
+                                                                <input class="form-control" type="hidden" name="type_osago" value="{{osago.type_osago}}" form="edit_form_{{ osago.type_osago }}_{{ osago.id }}">
+                                                                <div class="btn-group dropend" style="align-items:center;">
+                                                                    <span>{{ osago.name_type }}</span>
+                                                                    {% if osago.list_child_osago|length != 0 %}
+                                                                        <div class="btn-group dropend">
+                                                                            <button type="button" class="btn dropdown-toggle waves-effect waves-light dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                                <i class="mdi mdi-chevron-right"></i>
+                                                                            </button>
+                                                                            <div class="dropdown-menu" style="min-width:max-content;">
+                                                                                <div class="table-rep-plugin">
+                                                                                    <div class="table-sm mb-0" data-pattern="priority-columns">
+                                                                                        <table class="table table-striped" id="table">
+                                                                                            <tbody>
+                                                                                                {% for child_osago in osago.list_child_osago %}
+                                                                                                    <form action="" method="post" id="child_edit_form_{{ child_osago.type_osago }}_{{ child_osago.id }}">
+                                                                                                        <input class="form-control" type="hidden" name="id" value="{{child_osago.id}}" form="child_edit_form_{{ child_osago.type_osago }}_{{ child_osago.id }}" onclick="">
+                                                                                                        <input class="form-control" type="hidden" name="type_osago" value="{{child_osago.type_osago}}" form="child_edit_form_{{ child_osago.type_osago }}_{{ child_osago.id }}">
+                                                                                                    </form>
+                                                                                                    <tr class="{% if child_osago.prepared is sameas true %}table-info{% else %}table-danger{% endif %}" >
+                                                                                                        <th class="bs-checkbox">
+                                                                                                            <a>{{ child_osago.name_type }}</a>
+                                                                                                        </th>
+                                                                                                        <th class="bs-checkbox">
+                                                                                                            <button type="submit" class="btn btn-sm btn-secondary" form="child_edit_form_{{ child_osago.type_osago }}_{{ child_osago.id }}" name="type_action" value="edit" title="Изменить">
+                                                                                                                <i class="dripicons-document-edit"></i>
+                                                                                                            </button>
+                                                                                                            <button class="btn btn-sm btn-secondary" title="Подробно" onclick="load_info_order('{{ child_osago.id }}', '{{ child_osago.type_osago }}')">
+                                                                                                                <i class="fas fa-eye"></i>
+                                                                                                            </button>
+                                                                                                            <button type="submit" class="btn btn-sm {% if not child_osago.prepared%} btn-warning {% elif child_osago.server == None %} btn-success {% else %} btn-danger {% endif %}" form="child_edit_form_{{ child_osago.type_osago }}_{{ child_osago.id }}" name="type_action" value="power" {% if child_osago.prepared %} title="Power" {% else %} style="pointer-events: auto;" disabled title="Необходимо проверить данные" {% endif %}>
+                                                                                                                {% if child_osago.prepared %}
+                                                                                                                    <i class="dripicons-power"></i>
+                                                                                                                {% else %}
+                                                                                                                    <i class="bx bx-error"></i>
+                                                                                                                {% endif %}
+                                                                                                            </button>
+                                                                                                        </th>
+                                                                                                        <th>
+                                                                                                            <span class="badge
+                                                                                                                {% if child_osago.status_osago.id == 1 %}
+                                                                                                                    badge-soft-dark
+                                                                                                                {% elif child_osago.status_osago.id == 2 %}
+                                                                                                                    bg-info
+                                                                                                                {% elif child_osago.status_osago.id == 3 %}
+                                                                                                                    bg-warning
+                                                                                                                {% elif child_osago.status_osago.id == 4 %}
+                                                                                                                    bg-success
+                                                                                                                {% elif child_osago.status_osago.id == 5 %}
+                                                                                                                    bg-danger
+                                                                                                                {% elif child_osago.status_osago.id == 6 %}
+                                                                                                                    bg-danger
+                                                                                                                {% endif %} ">
+                                                                                                                    {{ child_osago.status_osago.name }}
+                                                                                                            </span>
+                                                                                                        </th>
+                                                                                                        <th>
+                                                                                                            {% if child_osago.status_osago.id == 2 %}
+                                                                                                                <div class="badge bg-dark" id="countdown_{{ child_osago.id }}"></div>
+                                                                                                                <script>
+                                                                                                                    var yourDateToGo_{{ child_osago.id }} = new Date(); //here you're making new Date object
+                                                                                                                    yourDateToGo_{{ child_osago.id }}.setTime(yourDateToGo_{{ child_osago.id }}.getTime() + ({{ child_osago.reg_date_minutes }} * 60 * 1000)); //your're setting date in this object 1 day more from now
+                                                                                                                    //you can change number of days to go by putting any number in place of 1
+
+                                                                                                                    var timing_{{ child_osago.id }} = setInterval( // you're making an interval - a thing, that is updating content after number of miliseconds, that you're writing after comma as second parameter
+                                                                                                                      function () {
+
+                                                                                                                        var currentDate_{{ child_osago.id }} = new Date().getTime(); //same thing as above
+                                                                                                                        var timeLeft_{{ child_osago.id }} = yourDateToGo_{{ child_osago.id }} - currentDate_{{ child_osago.id }}; //difference between time you set and now in miliseconds
+
+                                                                                                                        var minutes_{{ child_osago.id }} = Math.floor((timeLeft_{{ child_osago.id }} % (1000 * 60 * 60)) / (1000 * 60)); //conversion miliseconds on minutes
+                                                                                                                        if (minutes_{{ child_osago.id }} < 10) minutes="0"+minutes_{{ child_osago.id }};
+                                                                                                                        var seconds_{{ child_osago.id }} = Math.floor((timeLeft_{{ child_osago.id }} % (1000 * 60)) / 1000);//conversion miliseconds on seconds
+                                                                                                                        if (seconds_{{ child_osago.id }} < 10) seconds="0"+seconds_{{ child_osago.id }};
+
+                                                                                                                        document.getElementById("countdown_{{ child_osago.id }}").innerHTML = minutes_{{ child_osago.id }} + "м" + seconds_{{ child_osago.id }} + "с"; // putting number of days, hours, minutes and seconds in div,
+                                                                                                                        //which id is countdown
+
+                                                                                                                        if (timeLeft_{{ child_osago.id }} <= 0) {
+                                                                                                                          clearInterval(timing_{{ child_osago.id }});
+                                                                                                                          document.getElementById("countdown_{{ child_osago.id }}").innerHTML = "Время истекло"; //if there's no time left, programm in this 2 lines is clearing interval (nothing is counting now)
+                                                                                                                          //and you see "It's over" instead of time left
+                                                                                                                        }
+                                                                                                                      }, 1000);
+                                                                                                                </script>
+                                                                                                            {% endif %}
+                                                                                                        </th>
+                                                                                                        <th>{% if child_osago.url_pay != '' %}<a target="_blank" rel="noopener noreferrer" href="{{child_osago.url_pay}}" onclick="document.getElementById('set_in_job_{{ child_osago.id }}').submit();">Оплата</a>{% endif %}</th>
+
+                                                                                                    </tr>
+                                                                                                {% endfor %}
+                                                                                            </tbody>
+                                                                                        </table>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    {% endif %}
+                                                                </div>
+                                                            </th>
+                                                            <th>
+                                                                <div class="btn-group mt-4 mt-md-0" role="group">
+                                                                    <button type="submit" class="btn btn-secondary" form="edit_form_{{ osago.type_osago }}_{{ osago.id }}" name="type_action" value="delete" title="Удалить">
+                                                                        <i class="dripicons-trash"></i>
+                                                                    </button>
+                                                                    <button type="submit" class="btn btn-secondary" form="edit_form_{{ osago.type_osago }}_{{ osago.id }}" name="type_action" value="edit" title="Изменить">
+                                                                        <i class="dripicons-document-edit"></i>
+                                                                    </button>
+                                                                    <button type="submit" class="btn btn-secondary" form="edit_form_{{ osago.type_osago }}_{{ osago.id }}" name="type_action" value="success" title="Успешно">
+                                                                        <i class="dripicons-thumbs-up"></i>
+                                                                    </button>
+                                                                    <button class="btn btn-secondary" title="Подробно" onclick="load_info_order('{{ osago.id }}', '{{ osago.type_osago }}')">
+                                                                        <i class="fas fa-eye"></i>
+                                                                    </button>
+                                                                    <button type="submit" class="btn {% if not osago.prepared%} btn-warning {% elif osago.server == None %} btn-success {% else %} btn-danger {% endif %}" form="edit_form_{{ osago.type_osago }}_{{ osago.id }}" name="type_action" value="power" {% if osago.prepared %} title="Power" {% else %} style="pointer-events: auto;" disabled title="Необходимо проверить данные" {% endif %}>
+                                                                        {% if osago.prepared %}
+                                                                            <i class="dripicons-power"></i>
+                                                                        {% else %}
+                                                                            <i class="bx bx-error"></i>
+                                                                        {% endif %}
+                                                                    </button>
+                                                                    <button type="submit" class="btn btn-primary" form="edit_form_{{ osago.type_osago }}_{{ osago.id }}" name="type_action" value="add_favorites" title="Добавить в избранное">
+                                                                        <i class="dripicons-star"></i>
+                                                                    </button>
+                                                                    <button type="submit" class="btn btn-primary" form="edit_form_{{ osago.type_osago }}_{{ osago.id }}" name="type_action" value="duplicate" title="Дублировать заявку">
+                                                                        <i class="bx bxs-duplicate"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </th>
+                                                            <th>
+                                                                <span class="badge
+                                                                    {% if osago.status_osago.id == 1 %}
+                                                                        badge-soft-dark
+                                                                    {% elif osago.status_osago.id == 2 %}
+                                                                        bg-info
+                                                                    {% elif osago.status_osago.id == 3 %}
+                                                                        bg-warning
+                                                                    {% elif osago.status_osago.id == 4 %}
+                                                                        bg-success
+                                                                    {% elif osago.status_osago.id == 5 %}
+                                                                        bg-danger
+                                                                    {% elif osago.status_osago.id == 6 %}
+                                                                        bg-danger
+                                                                    {% endif %} ">{{ osago.status_osago.name }}
+                                                                </span>
+                                                            </th>
+                                                            <th>
+                                                                {% if osago.status_osago.id == 2 %}
+                                                                    <div class="badge bg-dark" id="countdown_{{ osago.id }}"></div>
+                                                                    <script>
+                                                                        var yourDateToGo_{{ osago.id }} = new Date(); //here you're making new Date object
+                                                                        yourDateToGo_{{ osago.id }}.setTime(yourDateToGo_{{ osago.id }}.getTime() + ({{ osago.reg_date_minutes }} * 60 * 1000)); //your're setting date in this object 1 day more from now
+                                                                        //you can change number of days to go by putting any number in place of 1
+
+                                                                        var timing_{{ osago.id }} = setInterval( // you're making an interval - a thing, that is updating content after number of miliseconds, that you're writing after comma as second parameter
+                                                                          function () {
+
+                                                                            var currentDate_{{ osago.id }} = new Date().getTime(); //same thing as above
+                                                                            var timeLeft_{{ osago.id }} = yourDateToGo_{{ osago.id }} - currentDate_{{ osago.id }}; //difference between time you set and now in miliseconds
+
+                                                                            var minutes_{{ osago.id }} = Math.floor((timeLeft_{{ osago.id }} % (1000 * 60 * 60)) / (1000 * 60)); //conversion miliseconds on minutes
+                                                                            if (minutes_{{ osago.id }} < 10) minutes="0"+minutes_{{ osago.id }};
+                                                                            var seconds_{{ osago.id }} = Math.floor((timeLeft_{{ osago.id }} % (1000 * 60)) / 1000);//conversion miliseconds on seconds
+                                                                            if (seconds_{{ osago.id }} < 10) seconds="0"+seconds_{{ osago.id }};
+
+                                                                            document.getElementById("countdown_{{ osago.id }}").innerHTML = minutes_{{ osago.id }} + "м" + seconds_{{ osago.id }} + "с"; // putting number of days, hours, minutes and seconds in div,
+                                                                            //which id is countdown
+
+                                                                            if (timeLeft_{{ osago.id }} <= 0) {
+                                                                              clearInterval(timing_{{ osago.id }});
+                                                                              document.getElementById("countdown_{{ osago.id }}").innerHTML = "Время истекло"; //if there's no time left, programm in this 2 lines is clearing interval (nothing is counting now)
+                                                                              //and you see "It's over" instead of time left
+                                                                            }
+                                                                          }, 1000);
+                                                                    </script>
+                                                                {% endif %}
+                                                            </th>
+                                                            <th id="otv">
+                                                                {{osago.user_name}}
+                                                            </th>
+                                                            <th id="oformitel"> {{ osago.oformitel_name }} </th>
+                                                            <th>{{osago.trans_num}}</th>
+                                                            <th>{{osago.surname}} {{osago.name[0]}}. {{osago.otchestvo[0]}}.</th>
+                                                            <th>{% if osago.url_pay != '' %}<a target="_blank" rel="noopener noreferrer" href="{{osago.url_pay}}" onclick="document.getElementById('set_in_job_{{ osago.id }}').submit();">Оплата</a>{% endif %}</th>
+{#                                                            <th>#}
+{#                                                                <button type="submit" class="btn btn-primary" form="edit_form_{{ osago.id }}" name="type_action" value="add_favorites" title="Добавить в избранное">#}
+{#                                                                    <i class="dripicons-star"></i>#}
+{#                                                                </button>#}
+{#                                                            </th>#}
+                                                        </tr>
+                                                    {% endif %}
+                                                {% endfor %}
+
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div> <!-- end col -->
+            </div> <!-- end row -->
+
+        </div>
+    </div>
+<!-- End Page-content -->
+
+<script src="/static/libs/jquery/jquery.min.js"></script>
+<script>
+
+</script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js" integrity="sha512-aMGMvNYu8Ue4G+fHa359jcPb1u+ytAF+P2SCb+PxrjCdO3n3ZTxJ30zuH39rimUggmTwmh2u7wvQsDTHESnmfQ==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.js" integrity="sha512-dMiBqqEV5i3KqpAdsgQSSZ72DnNib7otY0X+b/Tnn1EmLym1dxuZ19csdZqBnfDniKd9bmNtzStQzuMrIa5Ngw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+    var socket = io();
+    socket.emit('join');  // вход в комнату
+
+    document.getElementById("modal_sound").hidden = false;
+    $(window).on('load', function () {
+        $('#loading').hide();
+        $('#modal_sound').show();
+    })
+
+    Vue.createApp({
+      data() {
+        return {
+            showModalSound: true,
+        }
+      }
+    }).mount('#modal_vue')
+
+    Vue.createApp({
+      data() {
+        return {
+            selected_oformitel: "{{current_user.selected_oformitel_name}}",
+            selected_otv: "{{current_user.selected_otv_name}}"
+        }
+      },
+      methods: {
+          select_otv_oformitel() {
+                socket.emit('selected_otv', {otv_name: this.selected_otv});
+                socket.emit('selected_oformitel', {oformitel_name: this.selected_oformitel});
+                var selected_otv = this.selected_otv
+                var selected_oformitel = this.selected_oformitel
+                $('#table > tbody  > tr').each(function(index, tr) {
+                   if ( (selected_otv != "" && selected_oformitel != "") && (($(tr).find('#otv').text().split(" ").join("").split("\n").join("") != selected_otv) || ($(tr).find('#oformitel').text().split(" ").join("").split("\n").join("") != selected_oformitel)) ) {
+                       $(tr).attr("hidden",true);
+                   }
+                  else if (selected_otv == "" && ($(tr).find('#oformitel').text().split(" ").join("").split("\n").join("") != selected_oformitel && selected_oformitel != "") ) {
+                       $(tr).attr("hidden",true);
+                  }
+                  else if (($(tr).find('#otv').text().split(" ").join("").split("\n").join("") != selected_otv && selected_otv != "") && selected_oformitel == "" ) {
+                       $(tr).attr("hidden",true);
+                  }
+                   else {
+                       $(tr).attr("hidden",false);
+                   }
+                });
+            },
+        },
+        mounted(){
+          this.select_otv_oformitel()
+        }
+    }).mount('#tablehead')
+
+    function addAlert(message) {
+        $('#alerts').append(
+            '<div class="alert alert-success fade show" role="alert">'+
+                '<strong>'+message+'</strong>'+
+            '</div>');
+    }
+
+    function load_info_order(osago_id, osago_type) {
+        axios
+          .post("{{url_for('request_insurance.load_osago')}}", {"osago_id":osago_id, "osago_type":osago_type})
+          .then(response => {
+                console.log(response.data);
+                document.getElementById('login_parea_modal').innerHTML = response.data["login_parea"];
+                document.getElementById('password_parea_modal').innerHTML = response.data["password_parea"];
+                document.getElementById('strah_comp_modal').innerHTML = response.data["strah_comp"];
+                document.getElementById('server_modal').innerHTML = response.data["server_address"];
+                document.getElementById('number_bid').innerHTML = osago_id;
+                myArray = response.data["status_bot"].split(',').reverse();
+                var result = "<table class=\"table\"";
+                for(var i=0; i<myArray.length; i++) {
+                        result += "<tr>";
+                        result += "<th>"+myArray[i].split(' ')[0]+" "+myArray[i].split(' ')[1]+"</th>";
+                        result += "<th>"+myArray[i].split(' ').slice(2,).join(" ")+"</th>";
+                        result += "</tr>";
+                    }
+                    result += "</table>";
+                document.getElementById('history_modal').innerHTML = result;
+          })
+
+        document.getElementById('modal_extended_information').hidden=false;
+    }
+
+    var sound =new Howl({
+        src: ["/static/audio/file-sounds-1137-eventually.mp3"]
+    });
+
+    socket.on('success_osago', function() {
+        console.log("success_osago");
+        addAlert('ОСАГО - успешно. Обновите страницу');
+        sound.play()
+    });
+    socket.on('success_hook', function() {
+        console.log("success_hook");
+        addAlert('Ловилка - успешно. Обновите страницу');
+        sound.play()
+    });
+    socket.on('message_server', function(data) {
+        console.log(data['message']);
+    });
+
+    var table = $('#table');
+    var trBoldBlue = $("table");
+    $(table).on("click", "tr", function (){
+        console.log($(this));
+        var checkbox = $(this).find("[type=checkbox]");
+        if (checkbox.is(":checked")) {
+          checkbox.prop('checked', false);
+        } else {
+          checkbox.prop('checked', true);
+        }
+
+    });
+
+    $(table).on("click", "button", function (){
+        var checkbox = $(this).parent().parent().parent().find("[type=checkbox]");
+        if (checkbox.is(":checked")) {
+          checkbox.prop('checked', false);
+        } else {
+          checkbox.prop('checked', true);
+        }
+    });
+
+
+    $(document).on('change', '#tablehead th[data-field="otv"] select', function () {
+        console.log($(this).val());
+
+    });
+    $(document).on('change', '#tablehead th[data-field="oform"] select', function () {
+        console.log($(this).val());
+
+    });
+
+</script>
+<script type="text/javascript">
+    function check_notifiers() {
+      if($("#notifiers").is(":checked")){
+        $('#notifiers').attr('disabled', true);
+      }
+    }
+</script>
+
+<script>
+
+</script>
+
+
+
+<style>
+.table-responsive-sm{overflow:scroll;}
+thead tr:nth-child(1) th{background: white; position: sticky;top: 0;z-index: 10;}
+
+</style>
+
+<style>
+    :root {
+      --user-font-size: 11px;
+    }
+
+    .table-rep-plugin tbody th {
+        font-size: var(--user-font-size);
+    }
+    .accordion-button {
+        font-size: var(--user-font-size);
+    }
+    .form-select-sm {
+        font-size: var(--user-font-size);
+    }
+    .table-rep-plugin thead th {
+        font-size: var(--user-font-size);
+    }
+
+    .fulljustify {
+    	text-align:justify;
+        }
+        .fulljustify:after {
+            content: "";
+            display: inline-block;
+            width: 100%;
+        }
+        #tagline {
+            height: 80px;
+            overflow: hidden;
+            line-height: 80px; /* vert-center */
+        }
+</style>
+{% endblock %}

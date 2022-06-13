@@ -1,0 +1,9 @@
+alembic/
+alembic.ini
+*.sqlite
+*.ipynb
+*.drawio
+update_db.py
+app/databases/deploy_db.py
+app/databases/generate_emails.py
+app/databases/add_servers.py
